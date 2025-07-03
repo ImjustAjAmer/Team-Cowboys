@@ -26,7 +26,7 @@ public class tileManager : MonoBehaviour
             GetComponent<SpriteRenderer>().enabled = false;
         }
 
-        Debug.Log(this.gameObject.name + ": " + isActive);
+        //Debug.Log(this.gameObject.name + ": " + isActive);
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
