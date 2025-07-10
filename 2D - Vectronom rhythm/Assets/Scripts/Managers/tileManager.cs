@@ -9,6 +9,14 @@ public class TileManager : MonoBehaviour
     //public int col;         
     //public int row;
 
+    public bool isLeftEdge;
+    public bool isRightEdge;
+    public bool isUpEdge;
+    public bool isDownEdge;
+
+    public GameObject currentPNG;
+    public GameObject[] tilePNGs = new GameObject[16];
+
     public bool isActive;
 
     private SpriteRenderer sr;
