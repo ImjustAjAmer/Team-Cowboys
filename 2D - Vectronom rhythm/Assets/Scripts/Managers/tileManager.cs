@@ -6,10 +6,11 @@ public class TileManager : MonoBehaviour
     //public static TileManager Instance;
 
     //public bool isPlayerStanding;
-    public int col;         
-    public int row;
+    //public int col;         
+    //public int row;
 
     public bool isActive;
+
     private SpriteRenderer sr;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -17,8 +18,8 @@ public class TileManager : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
 
-        col = Mathf.RoundToInt(transform.position.x);
-        row = Mathf.RoundToInt(transform.position.y);
+        //col = Mathf.RoundToInt(transform.position.x);
+        //row = Mathf.RoundToInt(transform.position.y);
     }
 
     // Update is called once per frame

@@ -72,7 +72,7 @@ public class PlayerBehaviors : MonoBehaviour
             playerCollider.SetActive(false);
         }*/
 
-        if(currentStandingTile != null && currentStandingTile.isActive == false)
+        if (currentStandingTile != null && currentStandingTile.isActive == false)
         {
             Debug.Log("Player is dead");
         }

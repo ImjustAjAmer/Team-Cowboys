@@ -9,8 +9,9 @@ public class LevelState
     public float baseDuration; // Initial duration of this state before speed multiplier
     [ReadOnlyAtrribute] public float adjustedDuration; // Final duration after speed progression is applied
 
-    public List<Vector2Int> activeTileCoords; // Tiles that should be ON
-    public List<Vector2Int> inactiveTileCoords;  // Tiles that should be OFF
+    //public List<TileManager> activeTiles; // Tiles that should be ON
+    //public List<TileManager> inactiveTiles;  // Tiles that should be OFF
+    public List<bool> tileActivationStates;
 }
 
 [System.Serializable]
@@ -22,8 +23,13 @@ public class LevelSection
 
 public class LevelManager : MonoBehaviour
 {
+    [Header("Master Tile List (Manually Assign Once)")]
+    public List<TileManager> allTiles; // You assign this in Inspector, order matters
+
+    //public List<LevelSection> sections;
     public LevelSection[] sections; // All sections in the level loop
     public float speedMultiplier = 1f; // Initial tempo multiplier
+    public float speedMultiplierAdjuster = 0.85f;
 
     private int currentSectionIndex = 0; 
     private int currentStateIndex = 0; 
@@ -31,20 +37,20 @@ public class LevelManager : MonoBehaviour
 
     //private List<TileManager> allTiles = new List<TileManager>();
 
-    [Header("Manual Tile Grid")]
+    /*[Header("Manual Tile Grid")]
     public int gridWidth = 3;
     public int gridHeight = 3;
     public TileManager[,] tileGrid; // 2D grid of tiles
 
-    [Header("Assign Tiles Manually (Left to Right, Top to Bottom)")]
-    public TileManager[] tileRefs; // Assigned in Inspector manually
+    [Header("Assign Tiles Manually (Left to Right, Bottom to Top)")]
+    public TileManager[] tileRefs; // Assigned in Inspector manually*/
 
     void Start()
     {
         //TileManager[] foundTiles = GameObject.FindObjectsOfType<TileManager>();
         //allTiles.AddRange(foundTiles);
 
-        BuildTileGrid();
+        //BuildTileGrid();
 
         ApplySpeedMultiplier(); // Adjust all durations based on starting speed
         SetState(currentSectionIndex, currentStateIndex); // Start the first state
@@ -60,7 +66,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    void BuildTileGrid()
+    /*void BuildTileGrid()
     {
         tileGrid = new TileManager[gridWidth, gridHeight];
 
@@ -82,7 +88,7 @@ public class LevelManager : MonoBehaviour
                 index++;
             }
         }
-    }
+    }*/
 
     // This method applies the current speed multiplier to every state's duration
     void ApplySpeedMultiplier()
@@ -102,17 +108,33 @@ public class LevelManager : MonoBehaviour
         LevelState state = sections[sectionIndex].states[stateIndex];
         timer = state.adjustedDuration;
 
-        // Set tile states manually by (col, row)
-        foreach (Vector2Int coord in state.activeTileCoords)
+        // Sanity check — make sure state has matching number of bools
+        if (state.tileActivationStates.Count != allTiles.Count)
         {
-            if (IsValidCoord(coord))
-                tileGrid[coord.x, coord.y].isActive = true;
+            Debug.LogWarning("Tile state count doesn't match tile list count! Make sure each state has one checkbox per tile.");
+            return;
         }
 
-        foreach (Vector2Int coord in state.inactiveTileCoords)
+        /* Set tile states manually by (col, row)
+        foreach (TileManager tile in state.activeTiles)
         {
-            if (IsValidCoord(coord))
-                tileGrid[coord.x, coord.y].isActive = false;
+            if (tile != null)
+                tile.isActive = true;
+        }
+
+        foreach (TileManager tile in state.inactiveTiles)
+        {
+            if (tile != null)
+                tile.isActive = false;
+        }*/
+
+        // Apply activation bools to real tiles
+        for (int i = 0; i < allTiles.Count; i++)
+        {
+            if (allTiles[i] != null)
+            {
+                allTiles[i].isActive = state.tileActivationStates[i];
+            }
         }
 
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
@@ -132,7 +154,7 @@ public class LevelManager : MonoBehaviour
             if (currentSectionIndex >= sections.Length)
             {
                 currentSectionIndex = 0;
-                speedMultiplier *= 0.85f; // Example tempo ramp: 15% faster each full loop
+                speedMultiplier *= speedMultiplierAdjuster; 
                 ApplySpeedMultiplier(); // Re-apply updated speed to all states
                 Debug.Log("Looped all sections — tempo increased.");
             }
@@ -141,8 +163,8 @@ public class LevelManager : MonoBehaviour
         SetState(currentSectionIndex, currentStateIndex);
     }
 
-    bool IsValidCoord(Vector2Int coord)
+    /*bool IsValidCoord(Vector2Int coord)
     {
         return coord.x >= 0 && coord.x < gridWidth && coord.y >= 0 && coord.y < gridHeight;
-    }
+    }*/
 }
