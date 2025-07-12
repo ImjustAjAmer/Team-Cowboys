@@ -76,7 +76,44 @@ public class LevelManager : MonoBehaviour
             if (allTiles[i] != null)
             {
                 allTiles[i].isActive = state.tileActivationStates[i];
+
+                allTiles[i].isAboutToBeActive = false;
+                allTiles[i].isAboutToBeInactive = false;
             }
+        }
+
+        int nextSectionIndex = currentSectionIndex;
+        int nextStateIndex = stateIndex + 1;
+
+        if (nextStateIndex >= sections[nextSectionIndex].states.Count)
+        {
+            nextStateIndex = 0;
+            nextSectionIndex++;
+
+            if (nextSectionIndex >= sections.Length)
+            {
+                nextSectionIndex = 0;
+            }
+        }
+
+        LevelState nextState = sections[nextSectionIndex].states[nextStateIndex];
+
+        // Compare next state with current to set about-to-be flags
+        for (int i = 0; i < allTiles.Count; i++)
+        {
+            if (allTiles[i] == null) continue;
+
+            bool current = state.tileActivationStates[i];
+            bool next = nextState.tileActivationStates[i];
+
+            allTiles[i].isAboutToBeActive = !current && next;
+            allTiles[i].isAboutToBeInactive = current && !next;
+        }
+
+        for (int i = 0; i < allTiles.Count; i++)
+        {
+            if (allTiles[i] != null)
+                allTiles[i].RefreshVisual();
         }
 
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
