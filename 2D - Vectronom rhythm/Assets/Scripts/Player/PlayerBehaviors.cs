@@ -8,45 +8,36 @@ using System.IO;
 
 public class PlayerBehaviors : MonoBehaviour
 {
-    //public Transform movePoint;
-    //public float moveSpeed = 5f;
     public float moveDistance = 1f;
 
-    public GameObject playerCollider;
+    Collider2D playerCollider;
 
-    public TileManager currentStandingTile;
+    public string tileTag;
+
+    [ReadOnlyAtrribute] public TileManager currentStandingTile;
 
     //isJumping
     public bool isJumping;
     public float isJumpingTime;
 
     private Rigidbody2D rb;
-    //private Vector2 Vec2;
-    //private PlayerInput playerInput;
-    //private Playercontrols playerControls;
-
-
-    /*private void OnEnable()
-    {
-        playerControls.Enable();
-    }
-
-    private void OnDisable()
-    {
-        playerControls.Disable();
-    }*/
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        
-        // = new Playercontrols();
-        //playerInput = GetComponent<PlayerInput>();
+        playerCollider = GetComponent<Collider2D>();
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == tileTag)
+        {
+            currentStandingTile = collision.GetComponent<TileManager>();
+        }
     }
 
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.W) && !isJumping)
         {
             StartCoroutine(JumpingState("Up"));
@@ -67,34 +58,20 @@ public class PlayerBehaviors : MonoBehaviour
             StartCoroutine(JumpingState("Right"));
         }
 
-        /*if (isJumping)
+        if (currentStandingTile.isActive == false)
         {
-            playerCollider.SetActive(false);
-        }*/
-
-        if (currentStandingTile != null && currentStandingTile.isActive == false)
-        {
-            Debug.Log("Player is dead");
-        }
-
-        //Debug.Log("Player is standing on: " + currentStandingTile);
-
-        if (currentStandingTile != null)
-        {
-            Debug.Log("Player is standing on: " + currentStandingTile.gameObject.name);
+            Debug.Log("Game Over!");
         }
     }
 
     IEnumerator JumpingState(string direction)
     {
-        //Print the time of when the function is first called.
         isJumping = true;
-        playerCollider.SetActive(false);
 
-        //yield on a new YieldInstruction that waits for 5 seconds.
+        playerCollider.enabled = false;
+
         yield return new WaitForSeconds(isJumpingTime);
 
-        //After we have waited isJumpingTime seconds print the time again.
         if (direction == "Up")
         {
             rb.MovePosition(rb.position + Vector2.up * moveDistance);
@@ -116,14 +93,7 @@ public class PlayerBehaviors : MonoBehaviour
         }
 
         isJumping = false;
-        playerCollider.SetActive(true);
-    }
 
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "tile")
-        {
-            currentStandingTile = collision.GetComponent<TileManager>();
-        }
+        playerCollider.enabled = true;
     }
 }

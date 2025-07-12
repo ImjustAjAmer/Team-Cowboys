@@ -6,11 +6,12 @@ public class TileEdgeDetector : MonoBehaviour
 
     public Direction direction;
     public GameObject edgePNG;
+    public GameObject dividerPNG;
     public float checkDistance = 1f;
     public float checkRadius = 0.1f;
     public LayerMask tileLayer;
 
-    public void Update() //CheckEdge()
+    public void Update()
     {
         Vector2 offset = Vector2.zero;
 
@@ -27,7 +28,7 @@ public class TileEdgeDetector : MonoBehaviour
 
         Collider2D hit = Physics2D.OverlapCircle(checkPosition, checkRadius, tileLayer);
 
-        Debug.Log($"{name} ({direction}) checking at {checkPosition} — Hit: {(hit ? hit.name : "None")}");
+        //Debug.Log($"{name} ({direction}) checking at {checkPosition} — Hit: {(hit ? hit.name : "None")}");
 
         bool isEdge = true;
 
@@ -36,9 +37,12 @@ public class TileEdgeDetector : MonoBehaviour
             TileManager neighbor = hit.GetComponent<TileManager>();
             if (neighbor != null)
             {
-                Debug.Log($"{name} hit tile {hit.name}, isActive: {neighbor.isActive}");
+                //Debug.Log($"{name} hit tile {hit.name}, isActive: {neighbor.isActive}");
+
                 if (neighbor.isActive)
+                {
                     isEdge = false;
+                }
             }
             else
             {
@@ -46,17 +50,14 @@ public class TileEdgeDetector : MonoBehaviour
             }
         }
 
-        if (edgePNG != null)
-        {
-            edgePNG.SetActive(isEdge);
-            Debug.Log($"{name} ({direction}) PNG set to {(isEdge ? "ON" : "OFF")}");
-        }
+        edgePNG.SetActive(isEdge);
+        dividerPNG.SetActive(!isEdge);
 
         TileManager tile = GetComponentInParent<TileManager>();
-        if (tile != null && !tile.isActive)
+        if (!tile.isActive)
         {
-            if (edgePNG != null) edgePNG.SetActive(false);
-            return;
+            edgePNG.SetActive(false);
+            dividerPNG.SetActive(false);
         }
     }
 
