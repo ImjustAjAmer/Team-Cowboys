@@ -37,6 +37,11 @@ public class PlayerBehaviors : MonoBehaviour
         {
             currentStandingTile = collision.GetComponent<TileManager>();
             currentStandingTile.isPlayerStanding = true;
+
+            if (currentStandingTile.isActive == false)
+            {
+                Debug.Log("Game Over");
+            }
         } 
     }
 
