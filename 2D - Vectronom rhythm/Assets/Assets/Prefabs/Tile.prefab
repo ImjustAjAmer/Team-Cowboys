@@ -249,6 +249,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActive: 1
   isPlayerStanding: 0
+  isAboutToBeActive: 0
+  isAboutToBeInactive: 0
   playerShadowPNG: {fileID: 6101995444072408843}
 --- !u!61 &8093705608657066998
 BoxCollider2D:
@@ -294,7 +296,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.65, y: 0.65}
   m_EdgeRadius: 0
 --- !u!1 &1840656829872803069
 GameObject:

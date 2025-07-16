@@ -31,51 +31,28 @@ public class PlayerBehaviors : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
     }
 
-    public void OnTriggerStay2D(Collider2D collision)
+    /*
+    public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == tileTag && !isJumping)
         {
             currentStandingTile = collision.GetComponent<TileManager>();
             currentStandingTile.isPlayerStanding = true;
-
-            if (currentStandingTile.isActive == false)
-            {
-                Debug.Log("Game Over");
-            }
         } 
     }
 
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == tileTag && !isJumping)
+        {
+            currentStandingTile = collision.GetComponent<TileManager>();
+            currentStandingTile.isPlayerStanding = false;
+        }
+    }
+    */
+
     private void Update()
     {
-        /*if (Input.GetKeyDown(KeyCode.W) && !isJumping)
-        {
-            StartCoroutine(JumpingState("Up"));
-        }
-
-        if (Input.GetKeyDown(KeyCode.A) && !isJumping)
-        {
-            StartCoroutine(JumpingState("Left"));
-        }
-
-        if (Input.GetKeyDown(KeyCode.S) && !isJumping)
-        {
-            StartCoroutine(JumpingState("Down"));
-        }
-
-        if (Input.GetKeyDown(KeyCode.D) && !isJumping)
-        {
-            StartCoroutine(JumpingState("Right"));
-        }*/
-
-        /*if (!isJumping)
-        {
-            if (Input.GetKeyDown(KeyCode.W)) { bufferedDirection = "Up"; jumpBufferCounter = isJumpingTime; }
-            if (Input.GetKeyDown(KeyCode.A)) { bufferedDirection = "Left"; jumpBufferCounter = isJumpingTime; }
-            if (Input.GetKeyDown(KeyCode.S)) { bufferedDirection = "Down"; jumpBufferCounter = isJumpingTime; }
-            if (Input.GetKeyDown(KeyCode.D)) { bufferedDirection = "Right"; jumpBufferCounter = isJumpingTime; }
-        }*/
-
-        
         if (Input.GetKeyDown(KeyCode.W)) { bufferedDirection = "Up"; jumpBufferCounter = isJumpingTime; }
         if (Input.GetKeyDown(KeyCode.A)) { bufferedDirection = "Left"; jumpBufferCounter = isJumpingTime; }
         if (Input.GetKeyDown(KeyCode.S)) { bufferedDirection = "Down"; jumpBufferCounter = isJumpingTime; }
@@ -146,6 +123,38 @@ public class PlayerBehaviors : MonoBehaviour
         }
 
         transform.position = targetPos;
+
+        if (currentStandingTile != null)
+        {
+            currentStandingTile.isPlayerStanding = false;
+        }
+
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+        foreach (Collider2D col in hits)
+        {
+            if (col.CompareTag(tileTag))
+            {
+                currentStandingTile = col.GetComponent<TileManager>();
+                currentStandingTile.isPlayerStanding = true;
+
+                if (!currentStandingTile.isActive)
+                {
+                    Debug.Log("Game Over");
+
+                    if (playerSprite != null)
+                    {
+                        Color c = playerSprite.color;
+                        c.r = 0f;
+                        c.g = 0f;
+                        c.b = 0f;
+                        c.a = 1f;
+                        playerSprite.color = c;
+                    }
+                }
+
+                break;
+            }
+        }
 
         isJumping = false;
 
