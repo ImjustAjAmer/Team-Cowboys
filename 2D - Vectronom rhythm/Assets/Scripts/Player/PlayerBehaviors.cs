@@ -31,6 +31,22 @@ public class PlayerBehaviors : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
     }
 
+    void Start()
+    {
+        Collider2D hit = Physics2D.OverlapPoint(transform.position);
+        if (hit != null && hit.CompareTag(tileTag))
+        {
+            currentStandingTile = hit.GetComponent<TileManager>();
+            currentStandingTile.isPlayerStanding = true;
+
+            if (!currentStandingTile.isActive)
+            {
+                Debug.Log("Game Over");
+                playerSprite.color = new Color(0f, 0f, 0f, 1f);
+            }
+        }
+    }
+
     /*
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -81,6 +97,24 @@ public class PlayerBehaviors : MonoBehaviour
             Color c = playerSprite.color;
             c.a = 1.0f;
             playerSprite.color = c;
+        }
+
+        if (!isJumping && currentStandingTile != null)
+        {
+            if (!currentStandingTile.isActive)
+            {
+                Debug.Log("Game Over");
+
+                if (playerSprite != null)
+                {
+                    Color c = playerSprite.color;
+                    c.r = 0f;
+                    c.g = 0f;
+                    c.b = 0f;
+                    c.a = 1f;
+                    playerSprite.color = c;
+                }
+            }
         }
     }
 
