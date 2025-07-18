@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using System.IO;
 
 public class PlayerBehaviors : MonoBehaviour
@@ -26,6 +27,10 @@ public class PlayerBehaviors : MonoBehaviour
     private float jumpBufferCounter = 0f;
     private string bufferedDirection = "";
 
+    public float deathFreezeDuration = 0.5f;
+    private bool isDead = false;
+    private Quaternion originalRotation;
+
     private void Awake()
     {
         playerCollider = GetComponent<Collider2D>();
@@ -42,7 +47,8 @@ public class PlayerBehaviors : MonoBehaviour
             if (!currentStandingTile.isActive)
             {
                 Debug.Log("Game Over");
-                playerSprite.color = new Color(0f, 0f, 0f, 1f);
+                StartCoroutine(HandleGameOver());
+                //playerSprite.color = new Color(0f, 0f, 0f, 1f);
             }
         }
     }
@@ -69,6 +75,8 @@ public class PlayerBehaviors : MonoBehaviour
 
     private void Update()
     {
+        if (isDead) return;
+
         if (Input.GetKeyDown(KeyCode.W)) { bufferedDirection = "Up"; jumpBufferCounter = isJumpingTime; }
         if (Input.GetKeyDown(KeyCode.A)) { bufferedDirection = "Left"; jumpBufferCounter = isJumpingTime; }
         if (Input.GetKeyDown(KeyCode.S)) { bufferedDirection = "Down"; jumpBufferCounter = isJumpingTime; }
@@ -104,8 +112,9 @@ public class PlayerBehaviors : MonoBehaviour
             if (!currentStandingTile.isActive)
             {
                 Debug.Log("Game Over");
+                StartCoroutine(HandleGameOver());
 
-                if (playerSprite != null)
+                /*if (playerSprite != null)
                 {
                     Color c = playerSprite.color;
                     c.r = 0f;
@@ -113,7 +122,7 @@ public class PlayerBehaviors : MonoBehaviour
                     c.b = 0f;
                     c.a = 1f;
                     playerSprite.color = c;
-                }
+                }*/
             }
         }
     }
@@ -174,8 +183,9 @@ public class PlayerBehaviors : MonoBehaviour
                 if (!currentStandingTile.isActive)
                 {
                     Debug.Log("Game Over");
+                    StartCoroutine(HandleGameOver());
 
-                    if (playerSprite != null)
+                    /*if (playerSprite != null)
                     {
                         Color c = playerSprite.color;
                         c.r = 0f;
@@ -183,7 +193,7 @@ public class PlayerBehaviors : MonoBehaviour
                         c.b = 0f;
                         c.a = 1f;
                         playerSprite.color = c;
-                    }
+                    }*/
                 }
 
                 break;
@@ -193,5 +203,28 @@ public class PlayerBehaviors : MonoBehaviour
         isJumping = false;
 
         //playerCollider.enabled = true;
+    }
+
+    IEnumerator HandleGameOver()
+    {
+        isDead = true;
+        originalRotation = playerSprite.transform.rotation;
+
+        // Flip the sprite upside down
+        playerSprite.transform.rotation = Quaternion.Euler(0, 0, 180);
+
+        // Darken the sprite
+        //Color c = playerSprite.color;
+        //c = Color.black;
+        //playerSprite.color = c;
+
+        // Freeze input
+        yield return new WaitForSeconds(deathFreezeDuration);
+
+        // Reset rotation (optional if you're reloading scene anyway)
+        //playerSprite.transform.rotation = originalRotation;
+
+        // Reload scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -10,6 +10,8 @@ public class LevelState
     [ReadOnlyAtrribute] public float adjustedDuration;
 
     public List<bool> tileActivationStates;
+
+    public int sfxIndex = -1; // -1 = no sound
 }
 
 [System.Serializable]
@@ -22,20 +24,28 @@ public class LevelSection
 public class LevelManager : MonoBehaviour
 {
     [Header("Master Tile List (Manually Assign Once)")]
-    public List<TileManager> allTiles; 
+    public List<TileManager> allTiles;
 
-    public LevelSection[] sections; 
+    public LevelSection[] sections;
     public float speedMultiplier = 1f; // Initial tempo multiplier
     public float speedMultiplierAdjuster = 0.85f;
 
-    private int currentSectionIndex = 0; 
-    private int currentStateIndex = 0; 
+    private int currentSectionIndex = 0;
+    private int currentStateIndex = 0;
     private float timer;
+
+    [Header("Audio")]
+    public AudioClip[] stateSFX; // Set in Inspector
+    public AudioSource audioSource; // Set in Inspector (drag in AudioSource)
+
+    public bool loopLastStateOnly = false;
+
+    [Range(0f, 1f)] public float globalMaxAlpha = 1f;
 
     void Start()
     {
-        ApplySpeedMultiplier(); 
-        SetState(currentSectionIndex, currentStateIndex); 
+        ApplySpeedMultiplier();
+        SetState(currentSectionIndex, currentStateIndex);
     }
 
     void Update()
@@ -44,7 +54,15 @@ public class LevelManager : MonoBehaviour
 
         if (timer <= 0f)
         {
-            AdvanceState(); 
+            AdvanceState();
+        }
+
+        float currentDuration = sections[currentSectionIndex].states[currentStateIndex].adjustedDuration;
+
+        foreach (TileManager tile in allTiles)
+        {
+            if (tile != null)
+                tile.SetFadeInfo(timer, currentDuration, globalMaxAlpha);
         }
     }
 
@@ -64,6 +82,7 @@ public class LevelManager : MonoBehaviour
         LevelState state = sections[sectionIndex].states[stateIndex];
         timer = state.adjustedDuration;
 
+
         // Sanity check — make sure state has matching number of bools
         if (state.tileActivationStates.Count != allTiles.Count)
         {
@@ -79,6 +98,8 @@ public class LevelManager : MonoBehaviour
 
                 allTiles[i].isAboutToBeActive = false;
                 allTiles[i].isAboutToBeInactive = false;
+
+                //allTiles[i].SetFadeInfo(timer, state.adjustedDuration, globalMaxAlpha);
             }
         }
 
@@ -116,6 +137,12 @@ public class LevelManager : MonoBehaviour
                 allTiles[i].RefreshVisual();
         }
 
+        if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
+        {
+            audioSource.PlayOneShot(stateSFX[state.sfxIndex]);
+        }
+
+
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
     }
 
@@ -123,19 +150,24 @@ public class LevelManager : MonoBehaviour
     {
         currentStateIndex++;
 
-        // If we’ve finished all states in the current section...
         if (currentStateIndex >= sections[currentSectionIndex].states.Count)
         {
-            currentStateIndex = 0;
-            currentSectionIndex++;
-
-            // If we’ve finished all sections, loop back and increase tempo
-            if (currentSectionIndex >= sections.Length)
+            if (loopLastStateOnly)
             {
-                currentSectionIndex = 0;
-                speedMultiplier *= speedMultiplierAdjuster; 
-                ApplySpeedMultiplier(); 
-                Debug.Log("Looped all sections — tempo increased.");
+                currentStateIndex = sections[currentSectionIndex].states.Count - 1;
+            }
+            else
+            {
+                currentStateIndex = 0;
+                currentSectionIndex++;
+
+                if (currentSectionIndex >= sections.Length)
+                {
+                    currentSectionIndex = 0;
+                    speedMultiplier *= speedMultiplierAdjuster;
+                    ApplySpeedMultiplier();
+                    Debug.Log("Looped all sections — tempo increased.");
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-using UnityEditor.Build;
+﻿using UnityEditor.Build;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour
@@ -8,8 +8,13 @@ public class TileManager : MonoBehaviour
     [ReadOnlyAtrribute] public bool isAboutToBeActive = false;
     [ReadOnlyAtrribute] public bool isAboutToBeInactive = false;
 
+    private float stateTimer = 0f;
+    private float stateDuration = 1f;
+
     private SpriteRenderer sr;
     public GameObject playerShadowPNG;
+
+    public float maxAlpha = 1f;
 
     void Start()
     {
@@ -22,24 +27,49 @@ public class TileManager : MonoBehaviour
 
         Color c = sr.color;
 
-        if (isAboutToBeActive)
+        if (!isActive)
         {
-            c.a = 0.25f;
-        }
-        else if (isAboutToBeInactive)
-        {
-            c.a = 0.5f;
-        }
-        else if (!isActive)
-        {
-            c.a = 0f;
+            if (isAboutToBeActive)
+            {
+                float t = 1f - (stateTimer / stateDuration);
+                c.a = Mathf.Lerp(0f, maxAlpha, t);
+            }
+            else
+            {
+                c.a = 0f;
+            }
         }
         else
         {
-            c.a = 1f;
+            if (isAboutToBeInactive)
+            {
+                // Fade out (1 → 0)
+                float t = 1f - (stateTimer / stateDuration);
+                c.a = Mathf.Lerp(maxAlpha, 0f, t);
+            }
+            else
+            {
+                c.a = 1f;
+            }
         }
 
         sr.color = c;
+        //float t = 1f - Mathf.Clamp01(stateTimer / stateDuration);
+    }
+
+    public void SetFadeInfo(float timer, float duration, float gloablMaxAlpha)
+    {
+        stateTimer = timer;
+        stateDuration = duration;
+        maxAlpha = gloablMaxAlpha;
+    }
+
+    void Update()
+    {
+        stateTimer -= Time.deltaTime;
+        stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
+
+        RefreshVisual();
     }
 
     /*void Update()
