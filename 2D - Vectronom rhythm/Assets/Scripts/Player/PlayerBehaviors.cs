@@ -23,7 +23,7 @@ public class PlayerBehaviors : MonoBehaviour
     public float isJumpingTime;
 
     // Jump buffer system
-    //public float jumpBufferTime = 0.1f;
+    public float jumpBufferTime = 0.1f;
     private float jumpBufferCounter = 0f;
     private string bufferedDirection = "";
 
@@ -77,10 +77,10 @@ public class PlayerBehaviors : MonoBehaviour
     {
         if (isDead) return;
 
-        if (Input.GetKeyDown(KeyCode.W)) { bufferedDirection = "Up"; jumpBufferCounter = isJumpingTime; }
-        if (Input.GetKeyDown(KeyCode.A)) { bufferedDirection = "Left"; jumpBufferCounter = isJumpingTime; }
-        if (Input.GetKeyDown(KeyCode.S)) { bufferedDirection = "Down"; jumpBufferCounter = isJumpingTime; }
-        if (Input.GetKeyDown(KeyCode.D)) { bufferedDirection = "Right"; jumpBufferCounter = isJumpingTime; }
+        if (Input.GetKeyDown(KeyCode.W)) { bufferedDirection = "Up"; jumpBufferCounter = jumpBufferTime; }
+        if (Input.GetKeyDown(KeyCode.A)) { bufferedDirection = "Left"; jumpBufferCounter = jumpBufferTime; }
+        if (Input.GetKeyDown(KeyCode.S)) { bufferedDirection = "Down"; jumpBufferCounter = jumpBufferTime; }
+        if (Input.GetKeyDown(KeyCode.D)) { bufferedDirection = "Right"; jumpBufferCounter = jumpBufferTime; }
         
 
         if (!isJumping && jumpBufferCounter > 0f)

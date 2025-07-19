@@ -1,5 +1,6 @@
 ﻿using UnityEditor.Build;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 
@@ -18,42 +19,17 @@ public class TileManager : MonoBehaviour
 
     private LevelManager levelManager;
 
-    //private float maxAlpha = 1f;
-    //private float minAlpha = 0.5f;
-
-    //private SpriteRenderer[] edgePNGs;
-    //private SpriteRenderer[] dividerPNGs;
+    public List<SpriteRenderer> fadeTargets = new List<SpriteRenderer>();
 
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
         levelManager = FindObjectOfType<LevelManager>();
+
+        //CacheFadingChildren();
         //CacheEdgePNGs();
     }
 
-    /*void CacheEdgePNGs()
-    {
-        var allChildren = GetComponentsInChildren<Transform>(includeInactive: true);
-        var edgeList = new List<SpriteRenderer>();
-        var dividerList = new List<SpriteRenderer>();
-
-        foreach (var child in allChildren)
-        {
-            if (child.name.ToLower().Contains("edgepng"))
-            {
-                var sr = child.GetComponent<SpriteRenderer>();
-                if (sr != null) edgeList.Add(sr);
-            }
-            else if (child.name.ToLower().Contains("dividerpng"))
-            {
-                var sr = child.GetComponent<SpriteRenderer>();
-                if (sr != null) dividerList.Add(sr);
-            }
-        }
-
-        edgePNGs = edgeList.ToArray();
-        dividerPNGs = dividerList.ToArray();
-    }*/
 
     public void RefreshVisual()
     {
@@ -94,13 +70,13 @@ public class TileManager : MonoBehaviour
         c.a = alpha;
         sr.color = c;
 
-        // Set alpha on edge/divider PNGs
-        foreach (var edge in GetComponentsInChildren<SpriteRenderer>(includeInactive: true))
+        // Set alpha on fading children
+        foreach (var child in fadeTargets)
         {
-            if (edge == sr) continue;
-            Color ec = edge.color;
-            ec.a = alpha;
-            edge.color = ec;
+            if (child == null) continue;
+            Color cc = child.color;
+            cc.a = alpha;
+            child.color = cc;
         }
 
         playerShadowPNG.SetActive(isPlayerStanding);
@@ -108,9 +84,9 @@ public class TileManager : MonoBehaviour
 
     public void SetFadeInfo(float timer, float duration)
     {
-        stateTimer = timer;
+        stateTimer = Mathf.Clamp(timer, 0f, duration);
         stateDuration = duration;
-        stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
+        //stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
     }
 
     void Update()

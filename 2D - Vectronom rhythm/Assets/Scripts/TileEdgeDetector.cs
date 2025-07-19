@@ -44,20 +44,22 @@ public class TileEdgeDetector : MonoBehaviour
                     isEdge = false;
                 }
             }
-            else
+            /*else
             {
                 Debug.Log($"{name} hit object {hit.name} but it has no TileManager");
-            }
+            }*/
         }
 
-        edgePNG.SetActive(isEdge);
-        dividerPNG.SetActive(!isEdge);
+        // ONLY set which PNG is active — no alpha here
+        if (edgePNG != null) edgePNG.SetActive(isEdge);
+        if (dividerPNG != null) dividerPNG.SetActive(!isEdge);
 
+        // Also disable both if parent tile inactive
         TileManager tile = GetComponentInParent<TileManager>();
-        if (!tile.isActive)
+        if (tile != null && !tile.isActive)
         {
-            edgePNG.SetActive(false);
-            dividerPNG.SetActive(false);
+            if (edgePNG != null) edgePNG.SetActive(false);
+            if (dividerPNG != null) dividerPNG.SetActive(false);
         }
     }
 
