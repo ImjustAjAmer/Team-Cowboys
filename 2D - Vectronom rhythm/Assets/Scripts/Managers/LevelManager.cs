@@ -41,6 +41,7 @@ public class LevelManager : MonoBehaviour
     public bool loopLastStateOnly = false;
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
+    [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
 
     void Start()
     {
@@ -62,7 +63,7 @@ public class LevelManager : MonoBehaviour
         foreach (TileManager tile in allTiles)
         {
             if (tile != null)
-                tile.SetFadeInfo(timer, currentDuration, globalMaxAlpha);
+                tile.SetFadeInfo(timer, currentDuration);
         }
     }
 
@@ -131,10 +132,10 @@ public class LevelManager : MonoBehaviour
             allTiles[i].isAboutToBeInactive = current && !next;
         }
 
-        for (int i = 0; i < allTiles.Count; i++)
+        foreach (var tile in allTiles)
         {
-            if (allTiles[i] != null)
-                allTiles[i].RefreshVisual();
+            if (tile != null)
+                tile.RefreshVisual();
         }
 
         if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
@@ -142,32 +143,32 @@ public class LevelManager : MonoBehaviour
             audioSource.PlayOneShot(stateSFX[state.sfxIndex]);
         }
 
-
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
     }
 
     void AdvanceState()
     {
+        if (loopLastStateOnly &&
+            currentSectionIndex == sections.Length - 1 &&
+            currentStateIndex == sections[currentSectionIndex].states.Count - 1)
+        {
+            SetState(currentSectionIndex, currentStateIndex); // Just stay on this one
+            return;
+        }
+
         currentStateIndex++;
 
         if (currentStateIndex >= sections[currentSectionIndex].states.Count)
         {
-            if (loopLastStateOnly)
-            {
-                currentStateIndex = sections[currentSectionIndex].states.Count - 1;
-            }
-            else
-            {
-                currentStateIndex = 0;
-                currentSectionIndex++;
+            currentStateIndex = 0;
+            currentSectionIndex++;
 
-                if (currentSectionIndex >= sections.Length)
-                {
-                    currentSectionIndex = 0;
-                    speedMultiplier *= speedMultiplierAdjuster;
-                    ApplySpeedMultiplier();
-                    Debug.Log("Looped all sections — tempo increased.");
-                }
+            if (currentSectionIndex >= sections.Length)
+            {
+                currentSectionIndex = 0;
+                speedMultiplier *= speedMultiplierAdjuster;
+                ApplySpeedMultiplier();
+                Debug.Log("Looped all sections — tempo increased.");
             }
         }
 

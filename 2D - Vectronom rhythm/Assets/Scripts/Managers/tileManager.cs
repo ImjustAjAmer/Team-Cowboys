@@ -1,5 +1,7 @@
 ﻿using UnityEditor.Build;
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class TileManager : MonoBehaviour
 {
@@ -14,91 +16,107 @@ public class TileManager : MonoBehaviour
     private SpriteRenderer sr;
     public GameObject playerShadowPNG;
 
-    public float maxAlpha = 1f;
+    private LevelManager levelManager;
+
+    //private float maxAlpha = 1f;
+    //private float minAlpha = 0.5f;
+
+    //private SpriteRenderer[] edgePNGs;
+    //private SpriteRenderer[] dividerPNGs;
 
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+        levelManager = FindObjectOfType<LevelManager>();
+        //CacheEdgePNGs();
     }
+
+    /*void CacheEdgePNGs()
+    {
+        var allChildren = GetComponentsInChildren<Transform>(includeInactive: true);
+        var edgeList = new List<SpriteRenderer>();
+        var dividerList = new List<SpriteRenderer>();
+
+        foreach (var child in allChildren)
+        {
+            if (child.name.ToLower().Contains("edgepng"))
+            {
+                var sr = child.GetComponent<SpriteRenderer>();
+                if (sr != null) edgeList.Add(sr);
+            }
+            else if (child.name.ToLower().Contains("dividerpng"))
+            {
+                var sr = child.GetComponent<SpriteRenderer>();
+                if (sr != null) dividerList.Add(sr);
+            }
+        }
+
+        edgePNGs = edgeList.ToArray();
+        dividerPNGs = dividerList.ToArray();
+    }*/
 
     public void RefreshVisual()
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
 
-        Color c = sr.color;
+        float max = levelManager.globalMaxAlpha;
+        float min = levelManager.globalMinAlpha;
+
+        float alpha = 1f;
 
         if (!isActive)
         {
             if (isAboutToBeActive)
             {
                 float t = 1f - (stateTimer / stateDuration);
-                c.a = Mathf.Lerp(0f, maxAlpha, t);
+                alpha = Mathf.Lerp(0f, max, t);
             }
             else
             {
-                c.a = 0f;
+                alpha = 0f;
             }
         }
         else
         {
             if (isAboutToBeInactive)
             {
-                // Fade out (1 → 0)
                 float t = 1f - (stateTimer / stateDuration);
-                c.a = Mathf.Lerp(maxAlpha, 0f, t);
+                alpha = Mathf.Lerp(1f, min, t);
             }
             else
             {
-                c.a = 1f;
+                alpha = 1f;
             }
         }
 
+        // Set alpha on main tile
+        Color c = sr.color;
+        c.a = alpha;
         sr.color = c;
-        //float t = 1f - Mathf.Clamp01(stateTimer / stateDuration);
+
+        // Set alpha on edge/divider PNGs
+        foreach (var edge in GetComponentsInChildren<SpriteRenderer>(includeInactive: true))
+        {
+            if (edge == sr) continue;
+            Color ec = edge.color;
+            ec.a = alpha;
+            edge.color = ec;
+        }
+
+        playerShadowPNG.SetActive(isPlayerStanding);
     }
 
-    public void SetFadeInfo(float timer, float duration, float gloablMaxAlpha)
+    public void SetFadeInfo(float timer, float duration)
     {
         stateTimer = timer;
         stateDuration = duration;
-        maxAlpha = gloablMaxAlpha;
+        stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
     }
 
     void Update()
     {
         stateTimer -= Time.deltaTime;
         stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
-
         RefreshVisual();
     }
-
-    /*void Update()
-    {
-        isPlayerStanding = false;
-
-        // Show/hide tile based on active state
-        //sr.enabled = isActive;
-        Color c = sr.color;
-
-        if (!isActive)
-        {
-            c.a = 0f;
-        }
-        else if (isAboutToBeInactive)
-        {
-            c.a = 0.5f;
-        }
-        else if (isAboutToBeActive)
-        {
-            c.a = 0.25f;
-        }
-        else
-        {
-            c.a = 1f;
-        }
-
-        sr.color = c;
-
-        playerShadowPNG.SetActive(isPlayerStanding);
-    }*/
 }
