@@ -1,15 +1,27 @@
 using UnityEngine;
 using TMPro;
 using Mono.Cecil;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class TimerBehavior : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerText;
     public float remaingTime;
+    private PlayerBehaviors playerBehaviors;
+    private bool isDead = false;
+    public float deathFreezeDuration = 0.5f;
+    private Quaternion originalRotation;
 
-
+    public SpriteRenderer playerSprite;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        playerBehaviors = GetComponent<PlayerBehaviors>();
+    }
+
     void Start()
     {
         
@@ -18,17 +30,46 @@ public class TimerBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(remaingTime > 0 )
+        if (isDead) return;
+
+        if (remaingTime > 0)
         {
             remaingTime -= Time.deltaTime;
         }
         else
         {
             remaingTime = 0;
+            HandleGameOver();
+            StartCoroutine(HandleGameOver());
         }
-       
+
         int minutes = Mathf.FloorToInt(remaingTime / 60);
         int seconds = Mathf.FloorToInt(remaingTime % 60);
         timerText.text = string.Format("{00:00}:{1:00}", minutes, seconds);
+  
     }
+
+    public IEnumerator HandleGameOver()
+    {
+        isDead = true;
+        originalRotation = playerSprite.transform.rotation;
+
+        // Flip the sprite upside down
+        playerSprite.transform.rotation = Quaternion.Euler(0, 0, 180);
+
+        // Darken the sprite
+        //Color c = playerSprite.color;
+        //c = Color.black;
+        //playerSprite.color = c;
+
+        // Freeze input
+        yield return new WaitForSeconds(deathFreezeDuration);
+
+        // Reset rotation (optional if you're reloading scene anyway)
+        //playerSprite.transform.rotation = originalRotation;
+
+        // Reload scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
 }

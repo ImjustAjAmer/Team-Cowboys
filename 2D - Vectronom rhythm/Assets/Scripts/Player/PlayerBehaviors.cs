@@ -9,6 +9,8 @@ using System.IO;
 
 public class PlayerBehaviors : MonoBehaviour
 {
+
+    public static PlayerBehaviors Instance;
     public float moveDistance = 1f;
 
     Collider2D playerCollider;
@@ -205,7 +207,7 @@ public class PlayerBehaviors : MonoBehaviour
         //playerCollider.enabled = true;
     }
 
-    IEnumerator HandleGameOver()
+    public IEnumerator HandleGameOver()
     {
         isDead = true;
         originalRotation = playerSprite.transform.rotation;

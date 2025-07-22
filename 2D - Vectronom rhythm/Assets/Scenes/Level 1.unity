@@ -1107,7 +1107,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1288897345}
-  remaingTime: 50
+  remaingTime: 5
+  deathFreezeDuration: 0.5
+  playerSprite: {fileID: 2087185712}
 --- !u!1001 &304247401
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7187,6 +7189,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df2768129274dda41bfc26929df7543c, type: 3}
+--- !u!212 &2087185712 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3018892823021384866, guid: fc3a3f4ff7c04d547ad6270952252a8a, type: 3}
+  m_PrefabInstance: {fileID: 3645084522582918544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2141012106
 PrefabInstance:
   m_ObjectHideFlags: 0
