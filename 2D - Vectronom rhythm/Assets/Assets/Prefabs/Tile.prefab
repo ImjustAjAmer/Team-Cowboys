@@ -349,7 +349,15 @@ MonoBehaviour:
   isAboutToBeActive: 0
   isAboutToBeInactive: 0
   playerShadowPNG: {fileID: 6101995444072408843}
-  fadeTargets: []
+  fadeTargets:
+  - {fileID: 516066310635350716}
+  - {fileID: 5098102024660342512}
+  - {fileID: 1449099356012797337}
+  - {fileID: 6437958116755598519}
+  - {fileID: 31689054435803957}
+  - {fileID: 8862719677232306750}
+  - {fileID: 8046750583694184537}
+  - {fileID: 3365685805090658068}
 --- !u!61 &8093705608657066998
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -15,7 +15,6 @@ public class PlayerBehaviors : MonoBehaviour
     public SpriteRenderer playerSprite;
 
     public string tileTag;
-
     [ReadOnlyAtrribute] public TileManager currentStandingTile;
 
     //isJumping
@@ -29,7 +28,11 @@ public class PlayerBehaviors : MonoBehaviour
 
     public float deathFreezeDuration = 0.5f;
     private bool isDead = false;
+
     private Quaternion originalRotation;
+
+    //public AudioSource[] allAudio;
+    //public AudioClip[] deathSound;
 
     private void Awake()
     {
@@ -46,35 +49,27 @@ public class PlayerBehaviors : MonoBehaviour
 
             if (!currentStandingTile.isActive)
             {
-                Debug.Log("Game Over");
                 StartCoroutine(HandleGameOver());
-                //playerSprite.color = new Color(0f, 0f, 0f, 1f);
             }
         }
-    }
-
-    /*
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == tileTag && !isJumping)
+        else
         {
-            currentStandingTile = collision.GetComponent<TileManager>();
-            currentStandingTile.isPlayerStanding = true;
-        } 
-    }
-
-    public void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == tileTag && !isJumping)
-        {
-            currentStandingTile = collision.GetComponent<TileManager>();
-            currentStandingTile.isPlayerStanding = false;
+            StartCoroutine(HandleGameOver());
         }
     }
-    */
 
-    private void Update()
+    void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         if (isDead) return;
 
         if (Input.GetKeyDown(KeyCode.W)) { bufferedDirection = "Up"; jumpBufferCounter = jumpBufferTime; }
@@ -94,36 +89,13 @@ public class PlayerBehaviors : MonoBehaviour
             jumpBufferCounter -= Time.deltaTime;
         }
 
-        if (isJumping)
-        {
-            Color c = playerSprite.color;
-            c.a = 0.4f;
-            playerSprite.color = c;
-        }
-        else
-        {
-            Color c = playerSprite.color;
-            c.a = 1.0f;
-            playerSprite.color = c;
-        }
+        Color c = playerSprite.color;
+        c.a = isJumping ? 0.4f : 1.0f;
+        playerSprite.color = c;
 
-        if (!isJumping && currentStandingTile != null)
+        if (!isJumping && currentStandingTile != null && !currentStandingTile.isActive)
         {
-            if (!currentStandingTile.isActive)
-            {
-                Debug.Log("Game Over");
-                StartCoroutine(HandleGameOver());
-
-                /*if (playerSprite != null)
-                {
-                    Color c = playerSprite.color;
-                    c.r = 0f;
-                    c.g = 0f;
-                    c.b = 0f;
-                    c.a = 1f;
-                    playerSprite.color = c;
-                }*/
-            }
+            StartCoroutine(HandleGameOver());
         }
     }
 
@@ -131,33 +103,15 @@ public class PlayerBehaviors : MonoBehaviour
     {
         isJumping = true;
 
-        //playerCollider.enabled = false;
-
         Vector2 startPos = transform.position;
         Vector2 targetPos = startPos;
 
-        if (direction == "Up")
-        {
-            targetPos += Vector2.up * moveDistance;
-        }
-
-        if (direction == "Left")
-        {
-            targetPos += Vector2.left * moveDistance;
-        }
-
-        if (direction == "Down")
-        {
-            targetPos += Vector2.down * moveDistance;
-        }
-
-        if (direction == "Right")
-        {
-            targetPos += Vector2.right * moveDistance;
-        }
+        if (direction == "Up") targetPos += Vector2.up * moveDistance;
+        if (direction == "Left") targetPos += Vector2.left * moveDistance;
+        if (direction == "Down") targetPos += Vector2.down * moveDistance;
+        if (direction == "Right") targetPos += Vector2.right * moveDistance;
 
         float elapsed = 0f;
-
         while (elapsed < isJumpingTime)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPos, moveDistance / isJumpingTime * Time.deltaTime);
@@ -172,7 +126,11 @@ public class PlayerBehaviors : MonoBehaviour
             currentStandingTile.isPlayerStanding = false;
         }
 
+        currentStandingTile = null;
+
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+        bool landedOnTile = false;
+
         foreach (Collider2D col in hits)
         {
             if (col.CompareTag(tileTag))
@@ -182,47 +140,38 @@ public class PlayerBehaviors : MonoBehaviour
 
                 if (!currentStandingTile.isActive)
                 {
-                    Debug.Log("Game Over");
+                    isJumping = false;
                     StartCoroutine(HandleGameOver());
-
-                    /*if (playerSprite != null)
-                    {
-                        Color c = playerSprite.color;
-                        c.r = 0f;
-                        c.g = 0f;
-                        c.b = 0f;
-                        c.a = 1f;
-                        playerSprite.color = c;
-                    }*/
+                    yield break;
                 }
 
+                landedOnTile = true;
                 break;
             }
         }
 
         isJumping = false;
 
-        //playerCollider.enabled = true;
+        if (!landedOnTile)
+        {
+            StartCoroutine(HandleGameOver());
+        }
     }
 
     IEnumerator HandleGameOver()
     {
+        if (isDead) yield break;
+
         isDead = true;
         originalRotation = playerSprite.transform.rotation;
 
         // Flip the sprite upside down
         playerSprite.transform.rotation = Quaternion.Euler(0, 0, 180);
 
-        // Darken the sprite
-        //Color c = playerSprite.color;
-        //c = Color.black;
-        //playerSprite.color = c;
+        // Mute all other sounds
 
         // Freeze input
         yield return new WaitForSeconds(deathFreezeDuration);
-
-        // Reset rotation (optional if you're reloading scene anyway)
-        //playerSprite.transform.rotation = originalRotation;
 
         // Reload scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

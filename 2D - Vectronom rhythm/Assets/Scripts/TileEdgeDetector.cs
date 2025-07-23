@@ -44,17 +44,11 @@ public class TileEdgeDetector : MonoBehaviour
                     isEdge = false;
                 }
             }
-            /*else
-            {
-                Debug.Log($"{name} hit object {hit.name} but it has no TileManager");
-            }*/
         }
 
-        // ONLY set which PNG is active — no alpha here
         if (edgePNG != null) edgePNG.SetActive(isEdge);
         if (dividerPNG != null) dividerPNG.SetActive(!isEdge);
 
-        // Also disable both if parent tile inactive
         TileManager tile = GetComponentInParent<TileManager>();
         if (tile != null && !tile.isActive)
         {

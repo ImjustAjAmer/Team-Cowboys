@@ -24,10 +24,8 @@ public class TileManager : MonoBehaviour
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        levelManager = FindObjectOfType<LevelManager>();
-
-        //CacheFadingChildren();
-        //CacheEdgePNGs();
+        levelManager = FindFirstObjectByType<LevelManager>();
+        //levelManager = FindObjectOfType<LevelManager>();
     }
 
 
@@ -86,7 +84,6 @@ public class TileManager : MonoBehaviour
     {
         stateTimer = Mathf.Clamp(timer, 0f, duration);
         stateDuration = duration;
-        //stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
     }
 
     void Update()

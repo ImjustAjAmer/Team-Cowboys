@@ -35,8 +35,8 @@ public class LevelManager : MonoBehaviour
     private float timer;
 
     [Header("Audio")]
-    public AudioClip[] stateSFX; // Set in Inspector
-    public AudioSource audioSource; // Set in Inspector (drag in AudioSource)
+    public AudioClip[] stateSFX; 
+    public AudioSource audioSource; 
 
     public bool loopLastStateOnly = false;
 
