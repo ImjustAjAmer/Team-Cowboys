@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Jobs;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class LevelState
@@ -35,8 +36,8 @@ public class LevelManager : MonoBehaviour
     private float timer;
 
     [Header("Audio")]
-    public AudioClip[] stateSFX; // Set in Inspector
-    public AudioSource audioSource; // Set in Inspector (drag in AudioSource)
+    public AudioClip[] stateSFX; 
+    public AudioSource audioSource; 
 
     public bool loopLastStateOnly = false;
 
@@ -47,7 +48,54 @@ public class LevelManager : MonoBehaviour
     {
         ApplySpeedMultiplier();
         SetState(currentSectionIndex, currentStateIndex);
+
+        /* Auto-assign collectibles only attached to this LevelManager
+        CollectableBehaviors[] allCollectibles = FindObjectsOfType<CollectableBehaviors>(true);
+        foreach (var col in allCollectibles)
+        {
+            if (col.levelManager == this)
+            {
+                collectibles.Add(col);
+            }
+        }*/
     }
+
+    //[Header("Collectible Management")]
+    //public List<CollectableBehaviors> collectibles;
+    //[HideInInspector] public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
+    //public LevelManager nextLevelManager;
+
+    //private bool levelCompleteTriggered = false;
+
+    /*public void NotifyCollectibleCollected(CollectableBehaviors collected)
+    {
+        if (levelCompleteTriggered) return;
+
+        if (collectibles.Contains(collected))
+        {
+            collectibles.Remove(collected);
+        }
+
+        if (collectibles.Count == 0)
+        {
+            levelCompleteTriggered = true;
+            StartCoroutine(TransitionToNextLevel());
+        }
+    }*/
+
+    /*private IEnumerator TransitionToNextLevel()
+    {
+        // Optional: Add delay or effects before resetting
+        yield return new WaitForSeconds(0.25f);
+
+        if (nextLevelManager != null)
+        {
+            nextLevelManager.gameObject.SetActive(true);
+            this.gameObject.SetActive(false);
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }*/
 
     void Update()
     {
