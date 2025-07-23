@@ -92,7 +92,7 @@ public class PlayerBehaviors : MonoBehaviour
         }
 
         Color c = playerSprite.color;
-        c.a = isJumping ? 0.4f : 1.0f;
+        c.a = isJumping ? 0.6f : 1.0f;
         playerSprite.color = c;
 
         if (!isJumping && currentStandingTile != null && !currentStandingTile.isActive)
@@ -130,11 +130,22 @@ public class PlayerBehaviors : MonoBehaviour
 
         currentStandingTile = null;
 
+        //Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         bool landedOnTile = false;
 
         foreach (Collider2D col in hits)
         {
+            // Collectible handling
+            if (col.CompareTag("Collectible"))
+            {
+                CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
+                if (collectible != null)
+                {
+                    collectible.Collect(); // Ensure you have this method
+                }
+            }
+
             if (col.CompareTag(tileTag))
             {
                 currentStandingTile = col.GetComponent<TileManager>();

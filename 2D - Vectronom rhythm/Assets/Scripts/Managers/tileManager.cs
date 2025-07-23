@@ -28,7 +28,6 @@ public class TileManager : MonoBehaviour
         //levelManager = FindObjectOfType<LevelManager>();
     }
 
-
     public void RefreshVisual()
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
