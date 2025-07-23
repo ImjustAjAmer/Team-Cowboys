@@ -5,6 +5,8 @@ public class CollectableBehaviors : MonoBehaviour
 {
     public float timeToAdd = 5f;
 
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
@@ -13,12 +15,17 @@ public class CollectableBehaviors : MonoBehaviour
             if(timer != null)
             {
                 timer.addToTimer(timeToAdd);
+                addToScore();
             }
         }
 
         Destroy(gameObject);
     }
 
+    public void addToScore()
+    {
 
+
+    }
 
 }

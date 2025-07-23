@@ -5,15 +5,16 @@ TagManager:
   serializedVersion: 3
   tags:
   - Tile
+  - tile
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Tile
-  - 
+  - Collectables
   - 
   - 
   - 
@@ -47,6 +48,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 2977575759
+    locked: 0
+  - name: Collectables
+    uniqueID: 3055820851
     locked: 0
   m_RenderingLayers:
   - Default
