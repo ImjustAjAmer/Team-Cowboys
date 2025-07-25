@@ -1,11 +1,11 @@
-using System.Diagnostics.Contracts;
-using Unity.VisualScripting;
+
 using UnityEngine;
+
 using System.Collections;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
+
 using UnityEngine.SceneManagement;
-using System.IO;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor;
 
 public class PlayerBehaviors : MonoBehaviour
 {
@@ -18,6 +18,9 @@ public class PlayerBehaviors : MonoBehaviour
 
     public string tileTag;
     [ReadOnlyAtrribute] public TileManager currentStandingTile;
+
+    //reference to the animator
+    public Animator animator;
 
     //isJumping
     [ReadOnlyAtrribute] public bool isJumping = false;
@@ -39,6 +42,7 @@ public class PlayerBehaviors : MonoBehaviour
     private void Awake()
     {
         playerCollider = GetComponent<Collider2D>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Start()
@@ -78,7 +82,43 @@ public class PlayerBehaviors : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A)) { bufferedDirection = "Left"; jumpBufferCounter = jumpBufferTime; }
         if (Input.GetKeyDown(KeyCode.S)) { bufferedDirection = "Down"; jumpBufferCounter = jumpBufferTime; }
         if (Input.GetKeyDown(KeyCode.D)) { bufferedDirection = "Right"; jumpBufferCounter = jumpBufferTime; }
-        
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            animator.SetBool("isJumpingUp", true);
+        }
+        else if (Input.GetKeyUp(KeyCode.W))
+        {
+            animator.SetBool("isJumpingUp", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            animator.SetBool("isJumpingLeft", true);
+        }
+        else if (Input.GetKeyUp(KeyCode.A))
+        {
+            animator.SetBool("isJumpingLeft", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            animator.SetBool("isJumpingDown", true);
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
+        {
+            animator.SetBool("isJumpingDown", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            animator.SetBool("isJumpingRight", true);
+        }
+        else if(Input.GetKeyUp(KeyCode.D))
+        {
+            animator.SetBool("isJumpingRight", false);
+        }
+
 
         if (!isJumping && jumpBufferCounter > 0f)
         {
@@ -112,6 +152,8 @@ public class PlayerBehaviors : MonoBehaviour
         if (direction == "Left") targetPos += Vector2.left * moveDistance;
         if (direction == "Down") targetPos += Vector2.down * moveDistance;
         if (direction == "Right") targetPos += Vector2.right * moveDistance;
+         
+        
 
         float elapsed = 0f;
         while (elapsed < isJumpingTime)
@@ -164,6 +206,7 @@ public class PlayerBehaviors : MonoBehaviour
         }
 
         isJumping = false;
+
 
         if (!landedOnTile)
         {

@@ -1870,6 +1870,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 268d820705a8b274e9450bdfca1e4d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &987612588 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4235181470195483564, guid: fc3a3f4ff7c04d547ad6270952252a8a, type: 3}
+  m_PrefabInstance: {fileID: 3645084522582918544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1032099558
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1884,7 +1889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -7531,7 +7536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3885414190560990262, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7808,7 +7813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2403146996871563272, guid: fc3a3f4ff7c04d547ad6270952252a8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2403146996871563272, guid: fc3a3f4ff7c04d547ad6270952252a8a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7846,6 +7851,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6054146413051009906, guid: fc3a3f4ff7c04d547ad6270952252a8a, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 987612588}
     - target: {fileID: 6054146413051009906, guid: fc3a3f4ff7c04d547ad6270952252a8a, type: 3}
       propertyPath: jumpBufferTime
       value: 0.195
