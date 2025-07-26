@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class LevelState
 {
     public float baseDuration; 
-    [ReadOnlyAtrribute] public float adjustedDuration;
+    [HideInInspector] public float adjustedDuration;
 
     public List<bool> tileActivationStates;
 
@@ -48,54 +48,7 @@ public class LevelManager : MonoBehaviour
     {
         ApplySpeedMultiplier();
         SetState(currentSectionIndex, currentStateIndex);
-
-        /* Auto-assign collectibles only attached to this LevelManager
-        CollectableBehaviors[] allCollectibles = FindObjectsOfType<CollectableBehaviors>(true);
-        foreach (var col in allCollectibles)
-        {
-            if (col.levelManager == this)
-            {
-                collectibles.Add(col);
-            }
-        }*/
     }
-
-    //[Header("Collectible Management")]
-    //public List<CollectableBehaviors> collectibles;
-    //[HideInInspector] public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
-    //public LevelManager nextLevelManager;
-
-    //private bool levelCompleteTriggered = false;
-
-    /*public void NotifyCollectibleCollected(CollectableBehaviors collected)
-    {
-        if (levelCompleteTriggered) return;
-
-        if (collectibles.Contains(collected))
-        {
-            collectibles.Remove(collected);
-        }
-
-        if (collectibles.Count == 0)
-        {
-            levelCompleteTriggered = true;
-            StartCoroutine(TransitionToNextLevel());
-        }
-    }*/
-
-    /*private IEnumerator TransitionToNextLevel()
-    {
-        // Optional: Add delay or effects before resetting
-        yield return new WaitForSeconds(0.25f);
-
-        if (nextLevelManager != null)
-        {
-            nextLevelManager.gameObject.SetActive(true);
-            this.gameObject.SetActive(false);
-        }
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }*/
 
     void Update()
     {
@@ -135,7 +88,7 @@ public class LevelManager : MonoBehaviour
         // Sanity check — make sure state has matching number of bools
         if (state.tileActivationStates.Count != allTiles.Count)
         {
-            Debug.LogWarning("Tile state count doesn't match tile list count! Make sure each state has one checkbox per tile.");
+            Debug.LogWarning("Tile state count doesn't match tile list count.");
             return;
         }
 
@@ -147,8 +100,6 @@ public class LevelManager : MonoBehaviour
 
                 allTiles[i].isAboutToBeActive = false;
                 allTiles[i].isAboutToBeInactive = false;
-
-                //allTiles[i].SetFadeInfo(timer, state.adjustedDuration, globalMaxAlpha);
             }
         }
 

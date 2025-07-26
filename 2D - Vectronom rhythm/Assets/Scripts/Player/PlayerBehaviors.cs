@@ -189,4 +189,22 @@ public class PlayerBehaviors : MonoBehaviour
         // Reload scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        // This assumes the detection uses OverlapPointAll(transform.position)
+        // You can visualize it with a small sphere
+        Gizmos.DrawWireSphere(transform.position, 0.05f);
+
+        // Optional: visualize the player's actual collider bounds
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            Bounds bounds = col.bounds;
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
+        }
+    }
 }

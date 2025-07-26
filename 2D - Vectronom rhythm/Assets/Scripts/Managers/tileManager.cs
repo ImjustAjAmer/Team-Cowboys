@@ -6,10 +6,11 @@ using System.Collections.Generic;
 
 public class TileManager : MonoBehaviour
 {
-    public bool isActive;
-    [ReadOnlyAtrribute] public bool isPlayerStanding;
+    [ReadOnlyAtrribute] public bool isActive;
     [ReadOnlyAtrribute] public bool isAboutToBeActive = false;
     [ReadOnlyAtrribute] public bool isAboutToBeInactive = false;
+
+    [ReadOnlyAtrribute] public bool isPlayerStanding;
 
     private float stateTimer = 0f;
     private float stateDuration = 1f;
@@ -31,6 +32,15 @@ public class TileManager : MonoBehaviour
     public void RefreshVisual()
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
+
+        if (levelManager == null)
+        {
+            levelManager = FindFirstObjectByType<LevelManager>();
+            if (levelManager == null)
+            {
+                return; // Skip this frame; it will retry next frame
+            }
+        }
 
         float max = levelManager.globalMaxAlpha;
         float min = levelManager.globalMinAlpha;

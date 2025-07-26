@@ -46,7 +46,7 @@ public class TileEdgeDetector : MonoBehaviour
             }
         }
 
-        if (edgePNG != null) edgePNG.SetActive(isEdge);
+        //if (edgePNG != null) edgePNG.SetActive(isEdge);
         if (dividerPNG != null) dividerPNG.SetActive(!isEdge);
 
         TileManager tile = GetComponentInParent<TileManager>();
