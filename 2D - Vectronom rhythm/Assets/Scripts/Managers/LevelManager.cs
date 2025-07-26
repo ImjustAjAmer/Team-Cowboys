@@ -37,7 +37,11 @@ public class LevelManager : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip[] stateSFX; 
-    public AudioSource audioSource; 
+    public AudioSource audioSource;
+
+    [Header("Background")]
+    public SpriteRenderer background;
+    public Color[] backgroundColors; // Match number of states OR sections
 
     public bool loopLastStateOnly = false;
 
@@ -143,6 +147,11 @@ public class LevelManager : MonoBehaviour
         }
 
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
+
+        if (background != null && backgroundColors.Length > stateIndex)
+        {
+            background.color = backgroundColors[stateIndex];
+        }
     }
 
     void AdvanceState()

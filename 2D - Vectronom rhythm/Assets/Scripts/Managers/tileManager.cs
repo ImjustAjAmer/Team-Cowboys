@@ -26,7 +26,6 @@ public class TileManager : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         levelManager = FindFirstObjectByType<LevelManager>();
-        //levelManager = FindObjectOfType<LevelManager>();
     }
 
     public void RefreshVisual()
@@ -47,16 +46,20 @@ public class TileManager : MonoBehaviour
 
         float alpha = 1f;
 
+        float scale = 1f;
+
         if (!isActive)
         {
             if (isAboutToBeActive)
             {
                 float t = 1f - (stateTimer / stateDuration);
                 alpha = Mathf.Lerp(0f, max, t);
+                scale = Mathf.Lerp(0f, 1f, t);
             }
             else
             {
                 alpha = 0f;
+                scale = 0f;
             }
         }
         else
@@ -65,10 +68,12 @@ public class TileManager : MonoBehaviour
             {
                 float t = 1f - (stateTimer / stateDuration);
                 alpha = Mathf.Lerp(1f, min, t);
+                scale = Mathf.Lerp(1f, 0f, t);
             }
             else
             {
                 alpha = 1f;
+                scale = 1f;
             }
         }
 
@@ -76,6 +81,8 @@ public class TileManager : MonoBehaviour
         Color c = sr.color;
         c.a = alpha;
         sr.color = c;
+
+        gameObject.transform.localScale = new Vector3(scale, scale, 1f);
 
         // Set alpha on fading children
         foreach (var child in fadeTargets)
