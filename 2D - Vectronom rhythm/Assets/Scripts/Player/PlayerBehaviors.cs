@@ -9,7 +9,7 @@ using System.IO;
 
 public class PlayerBehaviors : MonoBehaviour
 {
-
+    //public LevelManager levelManager;
     public static PlayerBehaviors Instance;
     public float moveDistance = 1f;
 
@@ -150,6 +150,15 @@ public class PlayerBehaviors : MonoBehaviour
             {
                 currentStandingTile = col.GetComponent<TileManager>();
                 currentStandingTile.isPlayerStanding = true;
+
+                if (currentStandingTile.isNiceTiming)
+                {
+                    Debug.Log("NICE TIMING!");
+                    if (LevelManager.Instance != null)
+                    {
+                        LevelManager.Instance.DealBossDamage(currentStandingTile.niceTimingDamage);
+                    }
+                }
 
                 if (!currentStandingTile.isActive)
                 {

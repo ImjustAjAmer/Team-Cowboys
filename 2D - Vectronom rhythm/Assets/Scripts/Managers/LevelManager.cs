@@ -20,14 +20,21 @@ public class LevelSection
 {
     public string name; 
     public List<LevelState> states;
+
+    public List<Color> backgroundColorCycle;
 }
 
 public class LevelManager : MonoBehaviour
 {
-    [Header("Master Tile List (Manually Assign Once)")]
+    public static LevelManager Instance { get; private set; }
+
+    [Header("Tiles")]
     public List<TileManager> allTiles;
 
+    [Header("Sections")]
     public LevelSection[] sections;
+
+    [Header("Tempo")]
     public float speedMultiplier = 1f; // Initial tempo multiplier
     public float speedMultiplierAdjuster = 0.85f;
 
@@ -35,23 +42,43 @@ public class LevelManager : MonoBehaviour
     private int currentStateIndex = 0;
     private float timer;
 
+    [Header("Boss Settings")]
+    public int bossMaxHealth = 1000;
+    [ReadOnlyAtrribute] public int currentBossHealth;
+    [Tooltip("Speed increases every X% health lost")]
+    [Range(0f, 1f)] public float speedStepPercent = 0.1f;
+    public float speedIncreaseAmount = 0.1f;
+    private int lastSpeedStep = 0;
+    public float bossDeathAnimationTime = 2.0f;
+
+    [Header("Scene Progression")]
+    public string nextLevelSceneName;
+
     [Header("Audio")]
     public AudioClip[] stateSFX; 
     public AudioSource audioSource;
 
     [Header("Background")]
     public SpriteRenderer background;
-    public Color[] backgroundColors; // Match number of states OR sections
+    public float bgLerpDuration = 0.5f;
+    private Color currentBGColor;
 
-    public bool loopLastStateOnly = false;
+    //public bool loopLastStateOnly = false;
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
 
     void Start()
     {
+        //Instance = this;
+        currentBossHealth = bossMaxHealth;
         ApplySpeedMultiplier();
         SetState(currentSectionIndex, currentStateIndex);
+    }
+
+    void Awake()
+    {
+        Instance = this;
     }
 
     void Update()
@@ -148,21 +175,19 @@ public class LevelManager : MonoBehaviour
 
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
 
-        if (background != null && backgroundColors.Length > stateIndex)
-        {
-            background.color = backgroundColors[stateIndex];
-        }
+        PickAndLerpNewBGColor();
     }
+
 
     void AdvanceState()
     {
-        if (loopLastStateOnly &&
+        /*if (loopLastStateOnly &&
             currentSectionIndex == sections.Length - 1 &&
             currentStateIndex == sections[currentSectionIndex].states.Count - 1)
         {
             SetState(currentSectionIndex, currentStateIndex); // Just stay on this one
             return;
-        }
+        }*/
 
         currentStateIndex++;
 
@@ -174,12 +199,76 @@ public class LevelManager : MonoBehaviour
             if (currentSectionIndex >= sections.Length)
             {
                 currentSectionIndex = 0;
-                speedMultiplier *= speedMultiplierAdjuster;
+                //speedMultiplier *= speedMultiplierAdjuster;
+                //speedMultiplier += speedIncreaseAmount;
+                speedMultiplier *= speedIncreaseAmount;
                 ApplySpeedMultiplier();
                 Debug.Log("Looped all sections — tempo increased.");
             }
         }
 
         SetState(currentSectionIndex, currentStateIndex);
+    }
+
+    public void DealBossDamage(int amount)
+    {
+        if (currentBossHealth <= 0) return;
+
+        currentBossHealth -= amount;
+        currentBossHealth = Mathf.Max(currentBossHealth, 0);
+
+        float percentLost = 1f - ((float)currentBossHealth / bossMaxHealth);
+        int step = Mathf.FloorToInt(percentLost / speedStepPercent);
+
+        if (step > lastSpeedStep)
+        {
+            lastSpeedStep = step;
+            speedMultiplier += speedIncreaseAmount;
+            ApplySpeedMultiplier();
+            Debug.Log("Boss HP dropped — increased speed.");
+        }
+
+        if (currentBossHealth <= 0)
+        {
+            StartCoroutine(BossDeathSequence());
+        }
+    }
+
+    IEnumerator BossDeathSequence()
+    {
+        Debug.Log("Boss defeated!");
+        yield return new WaitForSeconds(bossDeathAnimationTime);
+        SceneManager.LoadScene(nextLevelSceneName);
+    }
+
+    void PickAndLerpNewBGColor()
+    {
+        List<Color> colors = sections[currentSectionIndex].backgroundColorCycle;
+
+        if (colors == null || colors.Count == 0 || background == null) return;
+
+        Color newColor;
+        do
+        {
+            newColor = colors[Random.Range(0, colors.Count)];
+        } while (newColor == currentBGColor);
+
+        StartCoroutine(LerpBackgroundColor(newColor));
+        currentBGColor = newColor;
+    }
+
+    IEnumerator LerpBackgroundColor(Color targetColor)
+    {
+        Color startColor = background.color;
+        float t = 0f;
+
+        while (t < bgLerpDuration)
+        {
+            t += Time.deltaTime;
+            background.color = Color.Lerp(startColor, targetColor, t / bgLerpDuration);
+            yield return null;
+        }
+
+        background.color = targetColor;
     }
 }
