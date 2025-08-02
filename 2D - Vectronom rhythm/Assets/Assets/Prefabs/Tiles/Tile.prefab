@@ -256,13 +256,7 @@ MonoBehaviour:
   playerShadowPNG: {fileID: 6101995444072408843}
   fadeTargets:
   - {fileID: 6894972848082621400}
-  minScale: 1
-  activeColor: {r: 0.72156864, g: 0.7882353, b: 0.25882354, a: 1}
-  inactiveWarningColor: {r: 0.43011758, g: 0.4716981, b: 0.12682448, a: 1}
-  isNiceTiming: 0
-  niceTimingWindow: 0.15
-  niceTimingColor: {r: 1, g: 0, b: 0.96763754, a: 1}
-  niceTimingDamage: 25
+  minScale: 0.8
 --- !u!61 &8093705608657066998
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -3,13 +3,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
 public class TileManager : MonoBehaviour
 {
     [ReadOnlyAtrribute] public bool isActive;
     [ReadOnlyAtrribute] public bool isAboutToBeActive = false;
     [ReadOnlyAtrribute] public bool isAboutToBeInactive = false;
-
     [ReadOnlyAtrribute] public bool isPlayerStanding;
 
     private float stateTimer = 0f;
@@ -22,19 +20,7 @@ public class TileManager : MonoBehaviour
 
     public List<SpriteRenderer> fadeTargets = new List<SpriteRenderer>();
 
-    [Header("Visual Settings")]
     public float minScale = 0.3f;
-    public Color activeColor = Color.white;
-    public Color inactiveWarningColor = Color.red;
-    public Color niceTimingColor = Color.yellow;
-
-    [Header("Nice Timing")]
-    public bool isNiceTiming = false;
-    public float niceTimingWindow = 0.15f;
-    public int niceTimingDamage = 25;
-
-    private Coroutine niceTimingRoutine;
-    private bool wasPreviouslyActive = false;
 
     void Start()
     {
@@ -60,19 +46,20 @@ public class TileManager : MonoBehaviour
 
         float alpha = 1f;
         float scale = 1f;
-        Color tileColor = activeColor;
 
-        if (isNiceTiming)
+        if (!isActive)
         {
-            alpha = max;
-            scale = 1f;
-            tileColor = niceTimingColor;
-        }
-        else if (!isActive)
-        {
-            alpha = 0f;
-            scale = minScale;
-            tileColor = inactiveWarningColor;
+            if (isAboutToBeActive)
+            {
+                float t = 1f - (stateTimer / stateDuration);
+                alpha = Mathf.Lerp(0f, max, t);
+                scale = Mathf.Lerp(0f, 1f, t);
+            }
+            else
+            {
+                alpha = 0f;
+                scale = minScale;
+            }
         }
         else
         {
@@ -80,24 +67,20 @@ public class TileManager : MonoBehaviour
             {
                 float t = 1f - (stateTimer / stateDuration);
                 alpha = Mathf.Lerp(1f, min, t);
-                scale = Mathf.Lerp(1f, minScale, t);
-                tileColor = Color.Lerp(activeColor, inactiveWarningColor, t);
+                //scale = Mathf.Lerp(1f, minScale, t);
             }
             else
             {
-                alpha = max;
+                alpha = 1f;
                 scale = 1f;
-                tileColor = activeColor;
             }
         }
 
         // Set alpha on main tile
-        Color c = tileColor;
+        Color c = sr.color;
         c.a = alpha;
         sr.color = c;
-        transform.localScale = new Vector3(scale, scale, 1f);
 
-        //gameObject.transform.localScale = new Vector3(scale, scale, 1f);
         transform.localScale = new Vector3(scale, scale, 1f);
 
         // Set alpha on fading children
@@ -116,21 +99,6 @@ public class TileManager : MonoBehaviour
     {
         stateTimer = Mathf.Clamp(timer, 0f, duration);
         stateDuration = duration;
-
-        if (!wasPreviouslyActive && isActive)
-        {
-            if (niceTimingRoutine != null) StopCoroutine(niceTimingRoutine);
-            niceTimingRoutine = StartCoroutine(NiceTimingWindow());
-        }
-
-        wasPreviouslyActive = isActive;
-    }
-
-    IEnumerator NiceTimingWindow()
-    {
-        isNiceTiming = true;
-        yield return new WaitForSeconds(niceTimingWindow);
-        isNiceTiming = false;
     }
 
     void Update()

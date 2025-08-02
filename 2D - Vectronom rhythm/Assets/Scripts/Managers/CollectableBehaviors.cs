@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class CollectableBehaviors : MonoBehaviour
 {
-    //public float timeToAdd = 5f;
     public enum CollectibleTier { Tier1, Tier2, Tier3 }
     public CollectibleTier tier;
 
@@ -21,15 +20,11 @@ public class CollectableBehaviors : MonoBehaviour
 
     public void Collect()
     {
-        //TimerBehavior timer = FindAnyObjectByType<TimerBehavior>();
-        //if (timer != null) timer.addToTimer(timeToAdd);
-
         if (LevelManager.Instance != null)
         {
             LevelManager.Instance.DealBossDamage(GetDamage());
         }
 
-        //Debug.Log("HIT!");
         Destroy(gameObject);
     }
 }

@@ -151,14 +151,12 @@ public class PlayerBehaviors : MonoBehaviour
                 currentStandingTile = col.GetComponent<TileManager>();
                 currentStandingTile.isPlayerStanding = true;
 
-                if (currentStandingTile.isNiceTiming)
+                /*if (currentStandingTile.isNiceTiming)
                 {
                     Debug.Log("NICE TIMING!");
                     if (LevelManager.Instance != null)
-                    {
                         LevelManager.Instance.DealBossDamage(currentStandingTile.niceTimingDamage);
-                    }
-                }
+                }*/
 
                 if (!currentStandingTile.isActive)
                 {

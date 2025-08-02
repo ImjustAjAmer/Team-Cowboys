@@ -162,11 +162,11 @@ public class LevelManager : MonoBehaviour
             allTiles[i].isAboutToBeInactive = current && !next;
         }
 
-        foreach (var tile in allTiles)
+        /*foreach (var tile in allTiles)
         {
             if (tile != null)
                 tile.RefreshVisual();
-        }
+        }*/
 
         if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
         {
@@ -201,7 +201,7 @@ public class LevelManager : MonoBehaviour
                 currentSectionIndex = 0;
                 //speedMultiplier *= speedMultiplierAdjuster;
                 //speedMultiplier += speedIncreaseAmount;
-                speedMultiplier *= speedIncreaseAmount;
+                speedMultiplier *= speedMultiplierAdjuster;
                 ApplySpeedMultiplier();
                 Debug.Log("Looped all sections — tempo increased.");
             }
@@ -223,7 +223,8 @@ public class LevelManager : MonoBehaviour
         if (step > lastSpeedStep)
         {
             lastSpeedStep = step;
-            speedMultiplier += speedIncreaseAmount;
+            //speedMultiplier += speedIncreaseAmount;
+            speedMultiplier *= speedMultiplierAdjuster;
             ApplySpeedMultiplier();
             Debug.Log("Boss HP dropped — increased speed.");
         }
