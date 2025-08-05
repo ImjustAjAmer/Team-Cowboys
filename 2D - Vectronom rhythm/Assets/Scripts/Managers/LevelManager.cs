@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class LevelState
 {
     public float baseDuration; 
-    [ReadOnlyAtrribute] public float adjustedDuration;
+    [HideInInspector] public float adjustedDuration;
 
     public List<bool> tileActivationStates;
 
@@ -20,14 +20,21 @@ public class LevelSection
 {
     public string name; 
     public List<LevelState> states;
+
+    public List<Color> backgroundColorCycle;
 }
 
 public class LevelManager : MonoBehaviour
 {
-    [Header("Master Tile List (Manually Assign Once)")]
+    public static LevelManager Instance { get; private set; }
+
+    [Header("Tiles")]
     public List<TileManager> allTiles;
 
+    [Header("Sections")]
     public LevelSection[] sections;
+
+    [Header("Tempo")]
     public float speedMultiplier = 1f; // Initial tempo multiplier
     public float speedMultiplierAdjuster = 0.85f;
 
@@ -35,67 +42,44 @@ public class LevelManager : MonoBehaviour
     private int currentStateIndex = 0;
     private float timer;
 
+    [Header("Boss Settings")]
+    public int bossMaxHealth = 1000;
+    [ReadOnlyAtrribute] public int currentBossHealth;
+    [Tooltip("Speed increases every X% health lost")]
+    [Range(0f, 1f)] public float speedStepPercent = 0.1f;
+    public float speedIncreaseAmount = 0.1f;
+    private int lastSpeedStep = 0;
+    public float bossDeathAnimationTime = 2.0f;
+
+    [Header("Scene Progression")]
+    public string nextLevelSceneName;
+
     [Header("Audio")]
     public AudioClip[] stateSFX; 
-    public AudioSource audioSource; 
+    public AudioSource audioSource;
 
-    public bool loopLastStateOnly = false;
+    [Header("Background")]
+    public SpriteRenderer background;
+    public float bgLerpDuration = 0.5f;
+    private Color currentBGColor;
+
+    //public bool loopLastStateOnly = false;
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
 
     void Start()
     {
+        //Instance = this;
+        currentBossHealth = bossMaxHealth;
         ApplySpeedMultiplier();
         SetState(currentSectionIndex, currentStateIndex);
-
-        /* Auto-assign collectibles only attached to this LevelManager
-        CollectableBehaviors[] allCollectibles = FindObjectsOfType<CollectableBehaviors>(true);
-        foreach (var col in allCollectibles)
-        {
-            if (col.levelManager == this)
-            {
-                collectibles.Add(col);
-            }
-        }*/
     }
 
-    //[Header("Collectible Management")]
-    //public List<CollectableBehaviors> collectibles;
-    //[HideInInspector] public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
-    //public LevelManager nextLevelManager;
-
-    //private bool levelCompleteTriggered = false;
-
-    /*public void NotifyCollectibleCollected(CollectableBehaviors collected)
+    void Awake()
     {
-        if (levelCompleteTriggered) return;
-
-        if (collectibles.Contains(collected))
-        {
-            collectibles.Remove(collected);
-        }
-
-        if (collectibles.Count == 0)
-        {
-            levelCompleteTriggered = true;
-            StartCoroutine(TransitionToNextLevel());
-        }
-    }*/
-
-    /*private IEnumerator TransitionToNextLevel()
-    {
-        // Optional: Add delay or effects before resetting
-        yield return new WaitForSeconds(0.25f);
-
-        if (nextLevelManager != null)
-        {
-            nextLevelManager.gameObject.SetActive(true);
-            this.gameObject.SetActive(false);
-        }
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }*/
+        Instance = this;
+    }
 
     void Update()
     {
@@ -135,7 +119,7 @@ public class LevelManager : MonoBehaviour
         // Sanity check — make sure state has matching number of bools
         if (state.tileActivationStates.Count != allTiles.Count)
         {
-            Debug.LogWarning("Tile state count doesn't match tile list count! Make sure each state has one checkbox per tile.");
+            Debug.LogWarning("Tile state count doesn't match tile list count.");
             return;
         }
 
@@ -147,8 +131,6 @@ public class LevelManager : MonoBehaviour
 
                 allTiles[i].isAboutToBeActive = false;
                 allTiles[i].isAboutToBeInactive = false;
-
-                //allTiles[i].SetFadeInfo(timer, state.adjustedDuration, globalMaxAlpha);
             }
         }
 
@@ -180,11 +162,11 @@ public class LevelManager : MonoBehaviour
             allTiles[i].isAboutToBeInactive = current && !next;
         }
 
-        foreach (var tile in allTiles)
+        /*foreach (var tile in allTiles)
         {
             if (tile != null)
                 tile.RefreshVisual();
-        }
+        }*/
 
         if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
         {
@@ -192,17 +174,20 @@ public class LevelManager : MonoBehaviour
         }
 
         Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
+
+        PickAndLerpNewBGColor();
     }
+
 
     void AdvanceState()
     {
-        if (loopLastStateOnly &&
+        /*if (loopLastStateOnly &&
             currentSectionIndex == sections.Length - 1 &&
             currentStateIndex == sections[currentSectionIndex].states.Count - 1)
         {
             SetState(currentSectionIndex, currentStateIndex); // Just stay on this one
             return;
-        }
+        }*/
 
         currentStateIndex++;
 
@@ -214,6 +199,8 @@ public class LevelManager : MonoBehaviour
             if (currentSectionIndex >= sections.Length)
             {
                 currentSectionIndex = 0;
+                //speedMultiplier *= speedMultiplierAdjuster;
+                //speedMultiplier += speedIncreaseAmount;
                 speedMultiplier *= speedMultiplierAdjuster;
                 ApplySpeedMultiplier();
                 Debug.Log("Looped all sections — tempo increased.");
@@ -221,5 +208,68 @@ public class LevelManager : MonoBehaviour
         }
 
         SetState(currentSectionIndex, currentStateIndex);
+    }
+
+    public void DealBossDamage(int amount)
+    {
+        if (currentBossHealth <= 0) return;
+
+        currentBossHealth -= amount;
+        currentBossHealth = Mathf.Max(currentBossHealth, 0);
+
+        float percentLost = 1f - ((float)currentBossHealth / bossMaxHealth);
+        int step = Mathf.FloorToInt(percentLost / speedStepPercent);
+
+        if (step > lastSpeedStep)
+        {
+            lastSpeedStep = step;
+            //speedMultiplier += speedIncreaseAmount;
+            speedMultiplier *= speedMultiplierAdjuster;
+            ApplySpeedMultiplier();
+            Debug.Log("Boss HP dropped — increased speed.");
+        }
+
+        if (currentBossHealth <= 0)
+        {
+            StartCoroutine(BossDeathSequence());
+        }
+    }
+
+    IEnumerator BossDeathSequence()
+    {
+        Debug.Log("Boss defeated!");
+        yield return new WaitForSeconds(bossDeathAnimationTime);
+        SceneManager.LoadScene(nextLevelSceneName);
+    }
+
+    void PickAndLerpNewBGColor()
+    {
+        List<Color> colors = sections[currentSectionIndex].backgroundColorCycle;
+
+        if (colors == null || colors.Count == 0 || background == null) return;
+
+        Color newColor;
+        do
+        {
+            newColor = colors[Random.Range(0, colors.Count)];
+        } while (newColor == currentBGColor);
+
+        StartCoroutine(LerpBackgroundColor(newColor));
+        currentBGColor = newColor;
+    }
+
+    IEnumerator LerpBackgroundColor(Color targetColor)
+    {
+        Color startColor = background.color;
+        float t = 0f;
+
+        while (t < bgLerpDuration)
+        {
+            t += Time.deltaTime;
+            background.color = Color.Lerp(startColor, targetColor, t / bgLerpDuration);
+            yield return null;
+        }
+
+        background.color = targetColor;
     }
 }
