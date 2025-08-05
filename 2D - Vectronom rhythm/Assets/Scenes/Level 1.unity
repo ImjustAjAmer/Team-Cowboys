@@ -3838,7 +3838,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3898,7 +3898,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: globalMinAlpha
-      value: 0.9
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: speedMultiplier
@@ -8912,7 +8912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2923233484190692454, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: m_StaticEditorFlags
