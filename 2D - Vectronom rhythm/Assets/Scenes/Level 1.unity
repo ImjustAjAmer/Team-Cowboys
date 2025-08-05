@@ -3918,7 +3918,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: stateSFX.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: 'allTiles.Array.data[0]'
@@ -3966,6 +3966,18 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: c540d3944c192f844988ac6e0d74e604, type: 3}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: 'stateSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: ea722dc08d5fc9344b545c4d6e20c8eb, type: 3}
+    - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
+      propertyPath: 'stateSFX.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8300000, guid: ea722dc08d5fc9344b545c4d6e20c8eb, type: 3}
+    - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
+      propertyPath: 'stateSFX.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8300000, guid: ea722dc08d5fc9344b545c4d6e20c8eb, type: 3}
+    - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
+      propertyPath: 'stateSFX.Array.data[4]'
       value: 
       objectReference: {fileID: 8300000, guid: ea722dc08d5fc9344b545c4d6e20c8eb, type: 3}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
