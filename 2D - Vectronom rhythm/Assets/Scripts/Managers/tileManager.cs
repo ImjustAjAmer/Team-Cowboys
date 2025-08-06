@@ -9,6 +9,7 @@ public class TileManager : MonoBehaviour
     [ReadOnlyAtrribute] public bool isAboutToBeActive = false;
     [ReadOnlyAtrribute] public bool isAboutToBeInactive = false;
     [ReadOnlyAtrribute] public bool isPlayerStanding;
+    public bool isPlayerJumping;
 
     private float stateTimer = 0f;
     private float stateDuration = 1f;
@@ -17,6 +18,7 @@ public class TileManager : MonoBehaviour
     public GameObject playerShadowPNG;
 
     private LevelManager levelManager;
+    private PlayerBehaviors playerBehaviors;
 
     public List<SpriteRenderer> fadeTargets = new List<SpriteRenderer>();
 
@@ -25,7 +27,9 @@ public class TileManager : MonoBehaviour
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+
         levelManager = FindFirstObjectByType<LevelManager>();
+        playerBehaviors = FindFirstObjectByType<PlayerBehaviors>();
     }
 
     public void RefreshVisual()
@@ -92,7 +96,7 @@ public class TileManager : MonoBehaviour
             child.color = cc;
         }
 
-        playerShadowPNG.SetActive(isPlayerStanding);
+        playerShadowPNG.SetActive(isPlayerStanding && !playerBehaviors.isJumping);
     }
 
     public void SetFadeInfo(float timer, float duration)
