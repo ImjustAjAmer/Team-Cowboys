@@ -1,24 +1,22 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Jobs;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 [System.Serializable]
 public class LevelState
 {
-    public float baseDuration; 
+    public float baseDuration;
     [HideInInspector] public float adjustedDuration;
-
     public List<bool> tileActivationStates;
-
-    public int sfxIndex = -1; // -1 = no sound
+    public int sfxIndex = -1;
 }
 
 [System.Serializable]
 public class LevelSection
 {
-    public string name; 
+    public string name;
     public List<LevelState> states;
 
     [Tooltip("Matches allTiles index. True = tile has a collectible this section.")]
@@ -30,11 +28,11 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance { get; private set; }
 
     public List<TileManager> allTiles;
-
     public LevelSection[] sections;
 
-    public float initialSpeedMultiplier = 1f; 
+    public float initialSpeedMultiplier = 1f;
     public float speedMultiplierAdjuster = 0.85f;
+    public float minSpeedMultiplier = 0.3f;
 
     private int currentSectionIndex = 0;
     private int currentStateIndex = 0;
@@ -42,35 +40,40 @@ public class LevelManager : MonoBehaviour
 
     public string nextLevelSceneName;
 
-    public AudioClip[] stateSFX; 
+    public AudioClip[] stateSFX;
     public AudioSource audioSource;
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
-    //[Range(0f, 1f)] public float minScale = 0.3f;
+
+    [Header("Debug UI")]
+    public TextMeshProUGUI collectibleCounterText;
+    public TextMeshProUGUI multiplierText;
+    public TextMeshProUGUI sectionStateText;
+    public TextMeshProUGUI remainingCollectiblesText;
 
     [Header("Collectible Progression")]
     [ReadOnlyAtrribute] public int totalCollectiblesInSection;
     [ReadOnlyAtrribute] public int collectedInSection;
-    public TMPro.TextMeshProUGUI collectibleCounterText;
-    public TMPro.TextMeshProUGUI multiplierText;
-    public float niceTimingMultiplierBonus = 0.25f;
-    public float minSpeedMultiplier = 0.3f;
-    public float niceTimingCooldown = 0f; // 0 = no cooldown
+
+    [Header("Score System")]
+    public int scoreMultiplier = 1;
+    public int niceTimingMultiplierBonus = 1;
+    public float niceTimingCooldown = 0f;
     private float niceTimingTimer = 0f;
 
-    [ReadOnlyAtrribute] public float scoreMultiplier = 1f;
+    private HashSet<GameObject> collectedThisSection = new HashSet<GameObject>();
 
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
         ApplySpeedMultiplier();
         SetState(currentSectionIndex, currentStateIndex);
-    }
-
-    void Awake()
-    {
-        Instance = this;
+        UpdateUI();
     }
 
     void Update()
@@ -90,7 +93,7 @@ public class LevelManager : MonoBehaviour
                 tile.SetFadeInfo(currentStateTimer, currentDuration);
         }
 
-        if (niceTimingCooldown > 0f && niceTimingTimer > 0f)
+        if (niceTimingCooldown > 0f)
         {
             niceTimingTimer -= Time.deltaTime;
         }
@@ -103,28 +106,19 @@ public class LevelManager : MonoBehaviour
         scoreMultiplier += niceTimingMultiplierBonus;
         niceTimingTimer = niceTimingCooldown;
 
-        UpdateCollectibleUI();
+        UpdateUI();
     }
 
-    public void OnCollectibleCollected()
+    public void OnCollectibleCollected(GameObject collectibleGO)
     {
-        collectedInSection++;
-        UpdateCollectibleUI();
-
-        initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
-        ApplySpeedMultiplier();
-    }
-
-    void UpdateCollectibleUI()
-    {
-        if (collectibleCounterText != null)
+        if (!collectedThisSection.Contains(collectibleGO))
         {
-            collectibleCounterText.text = $"{collectedInSection}/{totalCollectiblesInSection}";
-        }
+            collectedThisSection.Add(collectibleGO);
+            collectedInSection++;
 
-        if (multiplierText != null)
-        {
-            multiplierText.text = $"x{scoreMultiplier:F2}";
+            initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
+            ApplySpeedMultiplier();
+            UpdateUI();
         }
     }
 
@@ -144,42 +138,6 @@ public class LevelManager : MonoBehaviour
         LevelState state = sections[sectionIndex].states[stateIndex];
         currentStateTimer = state.adjustedDuration;
 
-        if (stateIndex == 0)
-        {
-            totalCollectiblesInSection = 0;
-            collectedInSection = 0;
-
-            var collectibleFlags = sections[sectionIndex].collectibleTileBools;
-
-            if (collectibleFlags.Count != allTiles.Count)
-            {
-                Debug.LogWarning("Collectible flags count doesn't match tile count.");
-            }
-            else
-            {
-                for (int i = 0; i < allTiles.Count; i++)
-                {
-                    if (collectibleFlags[i] && allTiles[i] != null)
-                    {
-                        Transform tile = allTiles[i].transform;
-                        for (int j = 0; j < tile.childCount; j++)
-                        {
-                            var col = tile.GetChild(j).GetComponent<CollectableBehaviors>();
-                            if (col != null)
-                            {
-                                col.gameObject.SetActive(false); // reset visibility
-                                totalCollectiblesInSection++;
-                            }
-                        }
-                    }
-                }
-            }
-
-            UpdateCollectibleUI();
-        }
-
-
-        // Make sure state has matching number of bools
         if (state.tileActivationStates.Count != allTiles.Count)
         {
             Debug.LogWarning("Tile state count doesn't match tile list count.");
@@ -191,7 +149,6 @@ public class LevelManager : MonoBehaviour
             if (allTiles[i] != null)
             {
                 allTiles[i].isActive = state.tileActivationStates[i];
-
                 allTiles[i].isAboutToBeActive = false;
                 allTiles[i].isAboutToBeInactive = false;
             }
@@ -213,7 +170,6 @@ public class LevelManager : MonoBehaviour
 
         LevelState nextState = sections[nextSectionIndex].states[nextStateIndex];
 
-        // Compare next state with current to set about-to-be flags
         for (int i = 0; i < allTiles.Count; i++)
         {
             if (allTiles[i] == null) continue;
@@ -225,48 +181,37 @@ public class LevelManager : MonoBehaviour
             allTiles[i].isAboutToBeInactive = current && !next;
         }
 
-        if (collectibleFlags.Count == allTiles.Count)
+        if (stateIndex == 0)
         {
-            for (int i = 0; i < allTiles.Count; i++)
-            {
-                if (collectibleFlags[i] && allTiles[i].isActive)
-                {
-                    Transform tile = allTiles[i].transform;
-                    for (int j = 0; j < tile.childCount; j++)
-                    {
-                        var col = tile.GetChild(j).GetComponent<CollectibleBehavior>();
-                        if (col != null)
-                        {
-                            col.gameObject.SetActive(true);
-                        }
-                    }
-                }
-            }
+            ResetCollectiblesForSection();
         }
+
+        ActivateCollectiblesForState();
 
         if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
         {
             audioSource.PlayOneShot(stateSFX[state.sfxIndex]);
         }
 
-        //Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
+        UpdateUI();
     }
 
     void AdvanceState()
     {
-        bool isLastState = currentStateIndex == sections[currentSectionIndex].states.Count - 1;
-
         currentStateIndex++;
 
         if (currentStateIndex >= sections[currentSectionIndex].states.Count)
         {
-            // Don't move to next section unless all collectibles are collected
             if (collectedInSection < totalCollectiblesInSection)
             {
-                currentStateIndex = 0; // Restart section
+                // Loop section
+                currentStateIndex = 0;
+                SetState(currentSectionIndex, currentStateIndex);
+                return;
             }
             else
             {
+                // Advance section
                 currentSectionIndex++;
                 currentStateIndex = 0;
 
@@ -279,5 +224,84 @@ public class LevelManager : MonoBehaviour
         }
 
         SetState(currentSectionIndex, currentStateIndex);
+    }
+
+    void ResetCollectiblesForSection()
+    {
+        collectedThisSection.Clear();
+        collectedInSection = 0;
+        totalCollectiblesInSection = 0;
+
+        var flags = sections[currentSectionIndex].collectibleTileBools;
+
+        if (flags.Count == allTiles.Count)
+        {
+            for (int i = 0; i < allTiles.Count; i++)
+            {
+                if (flags[i])
+                {
+                    Transform tile = allTiles[i].transform;
+
+                    for (int j = 0; j < tile.childCount; j++)
+                    {
+                        var col = tile.GetChild(j).GetComponent<CollectableBehaviors>();
+                        if (col != null)
+                        {
+                            col.ResetCollectible(); // Ensures it's hidden/inactive
+                            totalCollectiblesInSection++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void ActivateCollectiblesForState()
+    {
+        var flags = sections[currentSectionIndex].collectibleTileBools;
+
+        if (flags.Count == allTiles.Count)
+        {
+            for (int i = 0; i < allTiles.Count; i++)
+            {
+                if (flags[i] && allTiles[i].isActive)
+                {
+                    Transform tile = allTiles[i].transform;
+
+                    for (int j = 0; j < tile.childCount; j++)
+                    {
+                        var col = tile.GetChild(j).GetComponent<CollectableBehaviors>();
+                        if (col != null && !col.HasBeenCollected)
+                        {
+                            col.gameObject.SetActive(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void UpdateUI()
+    {
+        if (collectibleCounterText != null)
+        {
+            collectibleCounterText.text = $"{collectedInSection}/{totalCollectiblesInSection}";
+        }
+
+        if (multiplierText != null)
+        {
+            multiplierText.text = $"x{scoreMultiplier}";
+        }
+
+        if (sectionStateText != null)
+        {
+            sectionStateText.text = $"Section: {sections[currentSectionIndex].name} | State: {currentStateIndex + 1}/{sections[currentSectionIndex].states.Count}";
+        }
+
+        if (remainingCollectiblesText != null)
+        {
+            int remaining = totalCollectiblesInSection - collectedInSection;
+            remainingCollectiblesText.text = $"Remaining: {remaining}";
+        }
     }
 }

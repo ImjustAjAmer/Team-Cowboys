@@ -1,25 +1,24 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class CollectableBehaviors : MonoBehaviour
 {
-    private bool collected = false;
-
-    public void Collect()
-    {
-        if (collected) return;
-
-        collected = true;
-        gameObject.SetActive(false);
-        LevelManager.Instance.OnCollectibleCollected();
-    }
+    public bool HasBeenCollected { get; private set; } = false;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (HasBeenCollected) return;
+
         if (other.CompareTag("Player"))
         {
-            Collect();
+            HasBeenCollected = true;
+            gameObject.SetActive(false);
+            LevelManager.Instance.OnCollectibleCollected(gameObject);
         }
+    }
+
+    public void ResetCollectible()
+    {
+        HasBeenCollected = false;
+        gameObject.SetActive(false);
     }
 }

@@ -1259,7 +1259,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2136861065497369489, guid: 283e3fbe54fb5e94e8b6a5b551f52650, type: 3}
       propertyPath: m_Name
-      value: Collectable
+      value: Collectible
+      objectReference: {fileID: 0}
+    - target: {fileID: 2136861065497369489, guid: 283e3fbe54fb5e94e8b6a5b551f52650, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5602699970539291730, guid: 283e3fbe54fb5e94e8b6a5b551f52650, type: 3}
       propertyPath: m_LocalPosition.x

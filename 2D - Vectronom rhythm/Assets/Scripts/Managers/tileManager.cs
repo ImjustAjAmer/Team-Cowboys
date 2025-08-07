@@ -1,6 +1,4 @@
-﻿using UnityEditor.Build;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 public class TileManager : MonoBehaviour
@@ -9,7 +7,7 @@ public class TileManager : MonoBehaviour
     [ReadOnlyAtrribute] public bool isAboutToBeActive = false;
     [ReadOnlyAtrribute] public bool isAboutToBeInactive = false;
     [ReadOnlyAtrribute] public bool isPlayerStanding;
-    public bool isPlayerJumping;
+    [ReadOnlyAtrribute] public bool isPlayerJumping;
 
     private float stateTimer = 0f;
     private float stateDuration = 1f;
@@ -21,43 +19,68 @@ public class TileManager : MonoBehaviour
     private PlayerBehaviors playerBehaviors;
 
     public List<SpriteRenderer> fadeTargets = new List<SpriteRenderer>();
-
     public float minScale = 0.3f;
+
+    [Header("Nice Timing")]
+    public Color niceTimingColor = Color.yellow;
+    public float niceTimingWindow = 0.15f;
+    private Coroutine niceTimingRoutine;
+    private bool wasPreviouslyActive = false;
+    private bool isNiceTiming = false;
 
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-
-        levelManager = FindFirstObjectByType<LevelManager>();
+        levelManager = LevelManager.Instance;
         playerBehaviors = FindFirstObjectByType<PlayerBehaviors>();
     }
 
-    public void RefreshVisual()
+    public void SetFadeInfo(float timer, float duration)
+    {
+        stateTimer = Mathf.Clamp(timer, 0f, duration);
+        stateDuration = duration;
+
+        if (!wasPreviouslyActive && isActive)
+        {
+            if (niceTimingRoutine != null) StopCoroutine(niceTimingRoutine);
+            niceTimingRoutine = StartCoroutine(NiceTimingWindow());
+        }
+
+        wasPreviouslyActive = isActive;
+    }
+
+    void Update()
+    {
+        stateTimer -= Time.deltaTime;
+        stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
+        RefreshVisual();
+    }
+
+    void RefreshVisual()
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
-
-        if (levelManager == null)
-        {
-            levelManager = FindFirstObjectByType<LevelManager>();
-            if (levelManager == null)
-            {
-                return; // Skip this frame; it will retry next frame
-            }
-        }
+        if (levelManager == null) return;
 
         float max = levelManager.globalMaxAlpha;
         float min = levelManager.globalMinAlpha;
 
         float alpha = 1f;
         float scale = 1f;
+        Color color = sr.color;
 
-        if (!isActive)
+        if (isNiceTiming)
+        {
+            color = niceTimingColor;
+            alpha = max;
+            scale = 1f;
+        }
+        else if (!isActive)
         {
             if (isAboutToBeActive)
             {
                 float t = 1f - (stateTimer / stateDuration);
                 alpha = Mathf.Lerp(0f, max, t);
-                scale = Mathf.Lerp(0f, 1f, t);
+                scale = Mathf.Lerp(minScale, 1f, t);
             }
             else
             {
@@ -70,24 +93,22 @@ public class TileManager : MonoBehaviour
             if (isAboutToBeInactive)
             {
                 float t = 1f - (stateTimer / stateDuration);
-                alpha = Mathf.Lerp(1f, min, t);
-                //scale = Mathf.Lerp(1f, minScale, t);
+                alpha = Mathf.Lerp(max, min, t);
+                scale = Mathf.Lerp(1f, minScale, t);
             }
             else
             {
-                alpha = 1f;
+                alpha = max;
                 scale = 1f;
             }
+
+            color = sr.color;
         }
 
-        // Set alpha on main tile
-        Color c = sr.color;
-        c.a = alpha;
-        sr.color = c;
-
+        color.a = alpha;
+        sr.color = color;
         transform.localScale = new Vector3(scale, scale, 1f);
 
-        // Set alpha on fading children
         foreach (var child in fadeTargets)
         {
             if (child == null) continue;
@@ -96,19 +117,14 @@ public class TileManager : MonoBehaviour
             child.color = cc;
         }
 
-        playerShadowPNG.SetActive(isPlayerStanding && !playerBehaviors.isJumping);
+        if (playerShadowPNG != null)
+            playerShadowPNG.SetActive(isPlayerStanding && !playerBehaviors.isJumping);
     }
 
-    public void SetFadeInfo(float timer, float duration)
+    IEnumerator NiceTimingWindow()
     {
-        stateTimer = Mathf.Clamp(timer, 0f, duration);
-        stateDuration = duration;
-    }
-
-    void Update()
-    {
-        stateTimer -= Time.deltaTime;
-        stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
-        RefreshVisual();
+        isNiceTiming = true;
+        yield return new WaitForSeconds(niceTimingWindow);
+        isNiceTiming = false;
     }
 }
