@@ -19,13 +19,12 @@ public class LevelSection
     public string name;
     public List<LevelState> states;
 
-    [Tooltip("Matches allTiles index. True = tile has a collectible this section.")]
     public List<bool> collectibleTileBools = new List<bool>();
 }
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager Instance { get; private set; }
+    public static LevelManager Instance; //{ get; private set; }
 
     public List<TileManager> allTiles;
     public LevelSection[] sections;
@@ -45,6 +44,10 @@ public class LevelManager : MonoBehaviour
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
+    public float aboutToBeInactiveAlpha = 0.1f;
+
+    public Vector3 aboutToBeActiveScale = Vector3.one * 0.75f;
+    public Vector3 aboutToBeInactiveScale = Vector3.one * 0.5f;
 
     [Header("Debug UI")]
     public TextMeshProUGUI collectibleCounterText;
@@ -63,6 +66,7 @@ public class LevelManager : MonoBehaviour
     private float niceTimingTimer = 0f;
 
     private HashSet<GameObject> collectedThisSection = new HashSet<GameObject>();
+    //public List<CollectableBehaviors> sectionCollectibles;
 
     void Awake()
     {
@@ -160,12 +164,7 @@ public class LevelManager : MonoBehaviour
         if (nextStateIndex >= sections[nextSectionIndex].states.Count)
         {
             nextStateIndex = 0;
-            nextSectionIndex++;
-
-            if (nextSectionIndex >= sections.Length)
-            {
-                nextSectionIndex = 0;
-            }
+            nextSectionIndex = (nextSectionIndex + 1) % sections.Length;
         }
 
         LevelState nextState = sections[nextSectionIndex].states[nextStateIndex];
@@ -232,24 +231,24 @@ public class LevelManager : MonoBehaviour
         collectedInSection = 0;
         totalCollectiblesInSection = 0;
 
-        var flags = sections[currentSectionIndex].collectibleTileBools;
-
-        if (flags.Count == allTiles.Count)
+        for (int i = 0; i < allTiles.Count; i++)
         {
-            for (int i = 0; i < allTiles.Count; i++)
-            {
-                if (flags[i])
-                {
-                    Transform tile = allTiles[i].transform;
+            TileManager tile = allTiles[i];
+            if (tile == null) continue;
 
-                    for (int j = 0; j < tile.childCount; j++)
+            Transform tileTf = tile.transform;
+
+            for (int j = 0; j < tileTf.childCount; j++)
+            {
+                var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
+                if (col != null)
+                {
+                    col.ResetCollectible();
+
+                    if (sections[currentSectionIndex].collectibleTileBools.Count > i &&
+                        sections[currentSectionIndex].collectibleTileBools[i])
                     {
-                        var col = tile.GetChild(j).GetComponent<CollectableBehaviors>();
-                        if (col != null)
-                        {
-                            col.ResetCollectible(); // Ensures it's hidden/inactive
-                            totalCollectiblesInSection++;
-                        }
+                        totalCollectiblesInSection++;
                     }
                 }
             }
@@ -260,22 +259,26 @@ public class LevelManager : MonoBehaviour
     {
         var flags = sections[currentSectionIndex].collectibleTileBools;
 
-        if (flags.Count == allTiles.Count)
-        {
-            for (int i = 0; i < allTiles.Count; i++)
-            {
-                if (flags[i] && allTiles[i].isActive)
-                {
-                    Transform tile = allTiles[i].transform;
+        if (flags.Count != allTiles.Count) return;
 
-                    for (int j = 0; j < tile.childCount; j++)
-                    {
-                        var col = tile.GetChild(j).GetComponent<CollectableBehaviors>();
-                        if (col != null && !col.HasBeenCollected)
-                        {
-                            col.gameObject.SetActive(true);
-                        }
-                    }
+        for (int i = 0; i < allTiles.Count; i++)
+        {
+            TileManager tile = allTiles[i];
+            if (tile == null) continue;
+
+            bool shouldHaveCollectible = flags[i];
+            bool tileIsActive = tile.isActive;
+
+            Transform tileTf = tile.transform;
+
+            for (int j = 0; j < tileTf.childCount; j++)
+            {
+                var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
+                if (col != null && !col.hasBeenCollected)
+                {
+                    //col.TryActivate(true); 
+                    bool shouldShow = shouldHaveCollectible && tileIsActive && !col.hasBeenCollected;
+                    col.TryActivate(shouldShow);
                 }
             }
         }

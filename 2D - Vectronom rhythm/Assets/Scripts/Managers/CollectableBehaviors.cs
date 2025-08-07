@@ -1,24 +1,29 @@
 using UnityEngine;
+using System.Collections;
 
 public class CollectableBehaviors : MonoBehaviour
 {
-    public bool HasBeenCollected { get; private set; } = false;
+    public bool hasBeenCollected = false;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void Collect()
     {
-        if (HasBeenCollected) return;
+        if (hasBeenCollected) return;
 
-        if (other.CompareTag("Player"))
-        {
-            HasBeenCollected = true;
-            gameObject.SetActive(false);
-            LevelManager.Instance.OnCollectibleCollected(gameObject);
-        }
+        hasBeenCollected = true;
+        gameObject.SetActive(false);
+        LevelManager.Instance.OnCollectibleCollected(this.gameObject);
     }
 
     public void ResetCollectible()
     {
-        HasBeenCollected = false;
-        gameObject.SetActive(false);
+        hasBeenCollected = false;
+        //gameObject.SetActive(false);
+        TryActivate(false);
+    }
+
+    public void TryActivate(bool tileIsActive)
+    {
+        // Show if this hasn't been collected and its tile is active
+        gameObject.SetActive(tileIsActive && !hasBeenCollected);
     }
 }
