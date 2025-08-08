@@ -10,7 +10,7 @@ public class PlayerBehaviors : MonoBehaviour
     Collider2D playerCollider;
     public SpriteRenderer playerSprite;
 
-    public string tileTag;
+    public string tileTag = "TileTag";
     [ReadOnlyAtrribute] public TileManager currentStandingTile;
 
     //reference to the animator
@@ -31,9 +31,6 @@ public class PlayerBehaviors : MonoBehaviour
     private Quaternion originalRotation;
 
     private Playercontrols playerControls;
-
-    //public AudioSource[] allAudio;
-    //public AudioClip[] deathSound;
 
     private void Awake()
     {
@@ -178,7 +175,6 @@ public class PlayerBehaviors : MonoBehaviour
 
         currentStandingTile = null;
 
-        //Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         bool landedOnTile = false;
 
@@ -212,7 +208,6 @@ public class PlayerBehaviors : MonoBehaviour
 
         isJumping = false;
 
-
         if (!landedOnTile)
         {
             StartCoroutine(HandleGameOver());
@@ -242,8 +237,7 @@ public class PlayerBehaviors : MonoBehaviour
     {
         Gizmos.color = Color.red;
 
-        // This assumes the detection uses OverlapPointAll(transform.position)
-        // You can visualize it with a small sphere
+        // Visualize OverlapPointAll(transform.position) with a small sphere
         Gizmos.DrawWireSphere(transform.position, 0.05f);
 
         // Optional: visualize the player's actual collider bounds

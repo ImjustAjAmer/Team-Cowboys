@@ -10,30 +10,30 @@ public class TileManager : MonoBehaviour
     [ReadOnlyAtrribute] public bool isPlayerStanding;
 
     public SpriteRenderer tileVisual; // Child renderer
+    public GameObject playerShadowPNG;
+    public List<SpriteRenderer> fadeTargets = new List<SpriteRenderer>();
 
     private Vector3 originalScale;
     private Color originalColor;
+    public float minScale = 0.3f;
 
     private float stateTimer = 0f;
     private float stateDuration = 1f;
 
     private SpriteRenderer sr;
-    public GameObject playerShadowPNG;
-
     private LevelManager levelManager;
     private PlayerBehaviors playerBehaviors;
 
-    public List<SpriteRenderer> fadeTargets = new List<SpriteRenderer>();
-    public float minScale = 0.3f;
 
     [Header("Nice Timing")]
     public Color niceTimingColor = Color.yellow;
     public float niceTimingWindow = 0.15f;
-    private Coroutine niceTimingRoutine;
     private bool wasPreviouslyActive = false;
     private bool isNiceTiming = false;
+    private Coroutine niceTimingRoutine;
 
-    private CollectableBehaviors collectible;
+    public float transitionStartRatio = 0.1f;
+    //private CollectableBehaviors collectible;
 
     private Color defaultColor;
 
@@ -52,139 +52,48 @@ public class TileManager : MonoBehaviour
         if (sr != null)
             defaultColor = sr.color;
 
-        foreach (Transform child in transform)
-        {
-            if (child.CompareTag("Collectible"))
-            {
-                collectible = child.GetComponent<CollectableBehaviors>();
-                break;
-            }
-        }
     }
 
     public void SetFadeInfo(float timeLeft, float totalDuration) //(float timer, float duration)
     {
-        /*if (isAboutToBeActive)
+        if (isActive && !isAboutToBeActive)
         {
-            float t = 1f - (timeLeft / totalDuration);
-            tileVisual.color = Color.Lerp(
-                new Color(originalColor.r, originalColor.g, originalColor.b, LevelManager.Instance.aboutToBeActiveAlpha),
-                new Color(originalColor.r, originalColor.g, originalColor.b, LevelManager.Instance.globalMaxAlpha),
-                t
-            );
-            tileVisual.transform.localScale = Vector3.Lerp(
-                LevelManager.Instance.aboutToBeActiveScale,
-                originalScale,
-                t
-            );
+            originalColor.a = LevelManager.Instance.globalMaxAlpha;
+            originalScale = tileVisual.transform.localScale;
         }
-        else if (isAboutToBeInactive)
+        else if (!isActive && !isAboutToBeInactive)
         {
-            tileVisual.color = new Color(originalColor.r, originalColor.g, originalColor.b, LevelManager.Instance.aboutToBeInactiveAlpha);
-            tileVisual.transform.localScale = LevelManager.Instance.aboutToBeInactiveScale;
-        }
-        else if (!isActive)
-        {
-            tileVisual.color = new Color(originalColor.r, originalColor.g, originalColor.b, LevelManager.Instance.globalMinAlpha);
-        }
-        else
-        {
-            tileVisual.color = new Color(originalColor.r, originalColor.g, originalColor.b, LevelManager.Instance.globalMaxAlpha);
-            tileVisual.transform.localScale = originalScale;
-        }*/
-
-        //stateTimer = Mathf.Clamp(timer, 0f, duration);
-        //stateDuration = duration;
-
-        if (!wasPreviouslyActive && isActive)
-        {
-            if (niceTimingRoutine != null) StopCoroutine(niceTimingRoutine);
-            niceTimingRoutine = StartCoroutine(NiceTimingWindow());
+            originalColor.a = 0f;
+            originalScale = Vector3.zero;
         }
 
-        wasPreviouslyActive = isActive;
-    }
+        float t = Mathf.Clamp(transitionStartRatio - (timeLeft / totalDuration), 0.0f, 1.0f) / transitionStartRatio;
 
-    void Update()
-    {
-        stateTimer -= Time.deltaTime;
-        stateTimer = Mathf.Clamp(stateTimer, 0f, stateDuration);
-        RefreshVisual();
+        float endingAlpha = 1.0f;
+        Vector3 endingScale = Vector3.zero;
 
-        if (collectible != null)
+        if (isAboutToBeActive || isActive)
         {
-            collectible.TryActivate(isActive);
+            endingAlpha = LevelManager.Instance.aboutToBeActiveAlpha;
+            endingScale = new Vector3(LevelManager.Instance.aboutToBeActiveScale, LevelManager.Instance.aboutToBeActiveScale, LevelManager.Instance.aboutToBeActiveScale);
         }
-    }
-
-    void RefreshVisual()
-    {
-        if (sr == null) sr = GetComponent<SpriteRenderer>();
-        if (levelManager == null) return;
-
-        float max = levelManager.globalMaxAlpha;
-        float min = levelManager.globalMinAlpha;
-
-        float alpha = 1f;
-        float scale = 1f;
-        Color baseColor = defaultColor;
-
-        if (isNiceTiming)
+        else if (isAboutToBeInactive || !isActive)
         {
-            baseColor = niceTimingColor;
-            alpha = max;
-            scale = 1f;
-        }
-        else if (!isActive)
-        {
-            if (isAboutToBeActive)
-            {
-                float t = 1f - (stateTimer / stateDuration);
-                alpha = Mathf.Lerp(0f, max, t);
-                scale = Mathf.Lerp(minScale, 1f, t);
-            }
-            else
-            {
-                alpha = 0f;
-                scale = minScale;
-            }
-        }
-        else
-        {
-            if (isAboutToBeInactive)
-            {
-                float t = 1f - (stateTimer / stateDuration);
-                alpha = Mathf.Lerp(max, min, t);
-                scale = Mathf.Lerp(1f, minScale, t);
-            }
-            else
-            {
-                //alpha = max;
-                alpha = 1f;
-                scale = 1f;
-            }
+            endingAlpha = LevelManager.Instance.aboutToBeInactiveAlpha;
+            endingScale = new Vector3(LevelManager.Instance.aboutToBeInactiveScale, LevelManager.Instance.aboutToBeInactiveScale, LevelManager.Instance.aboutToBeInactiveScale);
         }
 
-        baseColor.a = alpha;
-        sr.color = baseColor;
-        transform.localScale = new Vector3(scale, scale, 1f);
+        tileVisual.color = Color.Lerp(new Color(originalColor.r, originalColor.g, originalColor.b, LevelManager.Instance.globalMaxAlpha),
+            new Color(originalColor.r, originalColor.g, originalColor.b, endingAlpha), t);
 
-        foreach (var child in fadeTargets)
+        tileVisual.transform.localScale = Vector3.Lerp(originalScale, endingScale, t);
+
+        if (t >= 1f)
         {
-            if (child == null) continue;
-            Color childColor = child.color;
-            childColor.a = alpha;
-            child.color = childColor;
+            originalColor = tileVisual.color;
+            originalScale = tileVisual.transform.localScale;
         }
 
-        if (playerShadowPNG != null)
-            playerShadowPNG.SetActive(isPlayerStanding && !playerBehaviors.isJumping);
-    }
-
-    IEnumerator NiceTimingWindow()
-    {
-        isNiceTiming = true;
-        yield return new WaitForSeconds(niceTimingWindow);
-        isNiceTiming = false;
+        //return;
     }
 }

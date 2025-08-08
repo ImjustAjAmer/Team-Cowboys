@@ -20,6 +20,7 @@ public class LevelSection
     public List<LevelState> states;
 
     public List<bool> collectibleTileBools = new List<bool>();
+    public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
 }
 
 public class LevelManager : MonoBehaviour
@@ -44,16 +45,21 @@ public class LevelManager : MonoBehaviour
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
-    public float aboutToBeInactiveAlpha = 0.1f;
+    [Range(0f, 1f)] public float aboutToBeActiveAlpha = 0.3f;
+    [Range(0f, 1f)] public float aboutToBeInactiveAlpha = 0.8f;
+    [Range(0f, 1f)] public float aboutToBeActiveScale = 0.75f;
+    [Range(0f, 1f)] public float aboutToBeInactiveScale = 0.5f;
 
-    public Vector3 aboutToBeActiveScale = Vector3.one * 0.75f;
-    public Vector3 aboutToBeInactiveScale = Vector3.one * 0.5f;
+    //public Vector3 aboutToBeActiveScale = Vector3.one * 0.75f;
+    //public Vector3 aboutToBeInactiveScale = Vector3.one * 0.5f;
 
     [Header("Debug UI")]
     public TextMeshProUGUI collectibleCounterText;
+    public TextMeshProUGUI scoreMultiplierText;
     public TextMeshProUGUI multiplierText;
     public TextMeshProUGUI sectionStateText;
-    public TextMeshProUGUI remainingCollectiblesText;
+    public TextMeshProUGUI currentStateDuration;
+    //public TextMeshProUGUI remainingCollectiblesText;
 
     [Header("Collectible Progression")]
     [ReadOnlyAtrribute] public int totalCollectiblesInSection;
@@ -66,7 +72,7 @@ public class LevelManager : MonoBehaviour
     private float niceTimingTimer = 0f;
 
     private HashSet<GameObject> collectedThisSection = new HashSet<GameObject>();
-    //public List<CollectableBehaviors> sectionCollectibles;
+    public List<CollectableBehaviors> sectionCollectibles;
 
     void Awake()
     {
@@ -115,15 +121,11 @@ public class LevelManager : MonoBehaviour
 
     public void OnCollectibleCollected(GameObject collectibleGO)
     {
-        if (!collectedThisSection.Contains(collectibleGO))
-        {
-            collectedThisSection.Add(collectibleGO);
-            collectedInSection++;
+        collectedInSection++;
 
-            initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
-            ApplySpeedMultiplier();
-            UpdateUI();
-        }
+        initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
+        ApplySpeedMultiplier();
+        UpdateUI();
     }
 
     void ApplySpeedMultiplier()
@@ -180,12 +182,12 @@ public class LevelManager : MonoBehaviour
             allTiles[i].isAboutToBeInactive = current && !next;
         }
 
-        if (stateIndex == 0)
+        /*if (stateIndex == 0)
         {
             ResetCollectiblesForSection();
-        }
+        }*/
 
-        ActivateCollectiblesForState();
+        //ActivateCollectiblesForState();
 
         if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
         {
@@ -201,7 +203,7 @@ public class LevelManager : MonoBehaviour
 
         if (currentStateIndex >= sections[currentSectionIndex].states.Count)
         {
-            if (collectedInSection < totalCollectiblesInSection)
+            if (true)//if (collectedInSection < totalCollectiblesInSection)
             {
                 // Loop section
                 currentStateIndex = 0;
@@ -238,6 +240,7 @@ public class LevelManager : MonoBehaviour
 
             Transform tileTf = tile.transform;
 
+            //no more child collectibles
             for (int j = 0; j < tileTf.childCount; j++)
             {
                 var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
@@ -271,9 +274,10 @@ public class LevelManager : MonoBehaviour
 
             Transform tileTf = tile.transform;
 
-            for (int j = 0; j < tileTf.childCount; j++)
+            //for (int j = 0; j < tileTf.childCount; j++)
             {
-                var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
+                //var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
+                var col = tileTf.GetComponentInChildren<CollectableBehaviors>();
                 if (col != null && !col.hasBeenCollected)
                 {
                     //col.TryActivate(true); 
@@ -299,12 +303,6 @@ public class LevelManager : MonoBehaviour
         if (sectionStateText != null)
         {
             sectionStateText.text = $"Section: {sections[currentSectionIndex].name} | State: {currentStateIndex + 1}/{sections[currentSectionIndex].states.Count}";
-        }
-
-        if (remainingCollectiblesText != null)
-        {
-            int remaining = totalCollectiblesInSection - collectedInSection;
-            remainingCollectiblesText.text = $"Remaining: {remaining}";
         }
     }
 }
