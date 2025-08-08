@@ -110,6 +110,20 @@ public class PlayerBehaviors : MonoBehaviour
         {
             StartCoroutine(HandleGameOver());
         }
+
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+        foreach (Collider2D col in hits)
+        {
+            if (col.CompareTag("Collectible"))
+            {
+                CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
+                if (collectible != null)
+                {
+                    collectible.Collect();
+                }
+            }
+        }
+
     }
 
     private void HandleInput(string direction, bool IsPressed)
@@ -180,14 +194,14 @@ public class PlayerBehaviors : MonoBehaviour
 
         foreach (Collider2D col in hits)
         {
-            if (col.CompareTag("Collectible"))
+            /*if (col.CompareTag("Collectible"))
             {
                 CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
                 if (collectible != null)
                 {
                     collectible.Collect();
                 }
-            }
+            }*/
 
             if (col.CompareTag(tileTag))
             {

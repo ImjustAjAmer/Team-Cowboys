@@ -9,7 +9,9 @@ public class LevelState
 {
     public float baseDuration;
     [HideInInspector] public float adjustedDuration;
+
     public List<bool> tileActivationStates;
+
     public int sfxIndex = -1;
 }
 
@@ -19,8 +21,10 @@ public class LevelSection
     public string name;
     public List<LevelState> states;
 
-    public List<bool> collectibleTileBools = new List<bool>();
-    public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
+    public List<CollectableBehaviors> sectionCollectibles;
+
+    //public List<bool> collectibleTileBools = new List<bool>();
+    //public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
 }
 
 public class LevelManager : MonoBehaviour
@@ -28,11 +32,13 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance; //{ get; private set; }
 
     public List<TileManager> allTiles;
+
     public LevelSection[] sections;
 
     public float initialSpeedMultiplier = 1f;
     public float speedMultiplierAdjuster = 0.85f;
-    public float minSpeedMultiplier = 0.3f;
+
+    //public float minSpeedMultiplier = 0.3f;
 
     private int currentSectionIndex = 0;
     private int currentStateIndex = 0;
@@ -45,34 +51,34 @@ public class LevelManager : MonoBehaviour
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
-    [Range(0f, 1f)] public float aboutToBeActiveAlpha = 0.3f;
-    [Range(0f, 1f)] public float aboutToBeInactiveAlpha = 0.8f;
-    [Range(0f, 1f)] public float aboutToBeActiveScale = 0.75f;
-    [Range(0f, 1f)] public float aboutToBeInactiveScale = 0.5f;
+
+    //[Range(0f, 1f)] public float aboutToBeActiveAlpha = 0.3f;
+    //[Range(0f, 1f)] public float aboutToBeInactiveAlpha = 0.8f;
+    //[Range(0f, 1f)] public float aboutToBeActiveScale = 0.75f;
+    //[Range(0f, 1f)] public float aboutToBeInactiveScale = 0.5f;
 
     //public Vector3 aboutToBeActiveScale = Vector3.one * 0.75f;
     //public Vector3 aboutToBeInactiveScale = Vector3.one * 0.5f;
 
     [Header("Debug UI")]
     public TextMeshProUGUI collectibleCounterText;
-    public TextMeshProUGUI scoreMultiplierText;
-    public TextMeshProUGUI multiplierText;
+    //public TextMeshProUGUI scoreMultiplierText;
+    //public TextMeshProUGUI multiplierText;
     public TextMeshProUGUI sectionStateText;
-    public TextMeshProUGUI currentStateDuration;
+    //public TextMeshProUGUI currentStateDuration;
     //public TextMeshProUGUI remainingCollectiblesText;
 
     [Header("Collectible Progression")]
     [ReadOnlyAtrribute] public int totalCollectiblesInSection;
     [ReadOnlyAtrribute] public int collectedInSection;
 
-    [Header("Score System")]
-    public int scoreMultiplier = 1;
-    public int niceTimingMultiplierBonus = 1;
-    public float niceTimingCooldown = 0f;
-    private float niceTimingTimer = 0f;
+    //[Header("Score System")]
+    //public int scoreMultiplier = 1;
+    //public int niceTimingMultiplierBonus = 1;
+    //public float niceTimingCooldown = 0f;
+    //private float niceTimingTimer = 0f;
 
-    private HashSet<GameObject> collectedThisSection = new HashSet<GameObject>();
-    public List<CollectableBehaviors> sectionCollectibles;
+    //private HashSet<GameObject> collectedThisSection = new HashSet<GameObject>();
 
     void Awake()
     {
@@ -103,13 +109,13 @@ public class LevelManager : MonoBehaviour
                 tile.SetFadeInfo(currentStateTimer, currentDuration);
         }
 
-        if (niceTimingCooldown > 0f)
+        /*if (niceTimingCooldown > 0f)
         {
             niceTimingTimer -= Time.deltaTime;
-        }
+        }*/
     }
 
-    public void OnNiceTimingSuccess()
+    /*public void OnNiceTimingSuccess()
     {
         if (niceTimingCooldown > 0f && niceTimingTimer > 0f) return;
 
@@ -117,14 +123,14 @@ public class LevelManager : MonoBehaviour
         niceTimingTimer = niceTimingCooldown;
 
         UpdateUI();
-    }
+    }*/
 
     public void OnCollectibleCollected(GameObject collectibleGO)
     {
         collectedInSection++;
 
-        initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
-        ApplySpeedMultiplier();
+        //initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
+        //ApplySpeedMultiplier();
         UpdateUI();
     }
 
@@ -155,6 +161,7 @@ public class LevelManager : MonoBehaviour
             if (allTiles[i] != null)
             {
                 allTiles[i].isActive = state.tileActivationStates[i];
+
                 allTiles[i].isAboutToBeActive = false;
                 allTiles[i].isAboutToBeInactive = false;
             }
@@ -203,7 +210,20 @@ public class LevelManager : MonoBehaviour
 
         if (currentStateIndex >= sections[currentSectionIndex].states.Count)
         {
-            if (true)//if (collectedInSection < totalCollectiblesInSection)
+            currentStateIndex = 0;
+            currentSectionIndex++;
+
+            if (currentSectionIndex >= sections.Length)
+            {
+                currentSectionIndex = 0;
+
+                initialSpeedMultiplier *= speedMultiplierAdjuster;
+                ApplySpeedMultiplier();
+
+                return;
+            }
+
+            /*if (true)//if (collectedInSection < totalCollectiblesInSection)
             {
                 // Loop section
                 currentStateIndex = 0;
@@ -221,13 +241,13 @@ public class LevelManager : MonoBehaviour
                     SceneManager.LoadScene(nextLevelSceneName);
                     return;
                 }
-            }
+            }*/
         }
 
         SetState(currentSectionIndex, currentStateIndex);
     }
 
-    void ResetCollectiblesForSection()
+    /*void ResetCollectiblesForSection()
     {
         collectedThisSection.Clear();
         collectedInSection = 0;
@@ -256,9 +276,9 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 
-    void ActivateCollectiblesForState()
+    /*void ActivateCollectiblesForState()
     {
         var flags = sections[currentSectionIndex].collectibleTileBools;
 
@@ -286,7 +306,7 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 
     void UpdateUI()
     {
@@ -295,10 +315,10 @@ public class LevelManager : MonoBehaviour
             collectibleCounterText.text = $"{collectedInSection}/{totalCollectiblesInSection}";
         }
 
-        if (multiplierText != null)
+        /*if (multiplierText != null)
         {
             multiplierText.text = $"x{scoreMultiplier}";
-        }
+        }*/
 
         if (sectionStateText != null)
         {
