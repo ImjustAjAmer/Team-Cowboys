@@ -1,91 +1,102 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Jobs;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 [System.Serializable]
 public class LevelState
 {
-    public float baseDuration; 
+    public float baseDuration;
     [HideInInspector] public float adjustedDuration;
 
     public List<bool> tileActivationStates;
 
-    public int sfxIndex = -1; // -1 = no sound
+    public int sfxIndex = -1;
 }
 
 [System.Serializable]
 public class LevelSection
 {
-    public string name; 
+    public string name;
     public List<LevelState> states;
 
-    public List<Color> backgroundColorCycle;
+    public List<CollectableBehaviors> sectionCollectibles;
+
+    //public List<bool> collectibleTileBools = new List<bool>();
+    //public List<CollectableBehaviors> collectibles = new List<CollectableBehaviors>();
 }
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager Instance { get; private set; }
+    public static LevelManager Instance; //{ get; private set; }
 
-    [Header("Tiles")]
     public List<TileManager> allTiles;
 
-    [Header("Sections")]
     public LevelSection[] sections;
 
-    [Header("Tempo")]
-    public float speedMultiplier = 1f; // Initial tempo multiplier
+    public float initialSpeedMultiplier = 1f;
     public float speedMultiplierAdjuster = 0.85f;
+
+    //public float minSpeedMultiplier = 0.3f;
 
     private int currentSectionIndex = 0;
     private int currentStateIndex = 0;
-    private float timer;
+    private float currentStateTimer;
 
-    [Header("Boss Settings")]
-    public int bossMaxHealth = 1000;
-    [ReadOnlyAtrribute] public int currentBossHealth;
-    [Tooltip("Speed increases every X% health lost")]
-    [Range(0f, 1f)] public float speedStepPercent = 0.1f;
-    public float speedIncreaseAmount = 0.1f;
-    private int lastSpeedStep = 0;
-    public float bossDeathAnimationTime = 2.0f;
-
-    [Header("Scene Progression")]
     public string nextLevelSceneName;
 
-    [Header("Audio")]
-    public AudioClip[] stateSFX; 
+    public AudioClip[] stateSFX;
     public AudioSource audioSource;
-
-    [Header("Background")]
-    public SpriteRenderer background;
-    public float bgLerpDuration = 0.5f;
-    private Color currentBGColor;
-
-    //public bool loopLastStateOnly = false;
 
     [Range(0f, 1f)] public float globalMaxAlpha = 1f;
     [Range(0f, 1f)] public float globalMinAlpha = 0.5f;
 
-    void Start()
-    {
-        //Instance = this;
-        currentBossHealth = bossMaxHealth;
-        ApplySpeedMultiplier();
-        SetState(currentSectionIndex, currentStateIndex);
-    }
+    //[Range(0f, 1f)] public float aboutToBeActiveAlpha = 0.3f;
+    //[Range(0f, 1f)] public float aboutToBeInactiveAlpha = 0.8f;
+    //[Range(0f, 1f)] public float aboutToBeActiveScale = 0.75f;
+    //[Range(0f, 1f)] public float aboutToBeInactiveScale = 0.5f;
+
+    //public Vector3 aboutToBeActiveScale = Vector3.one * 0.75f;
+    //public Vector3 aboutToBeInactiveScale = Vector3.one * 0.5f;
+
+    [Header("Debug UI")]
+    public TextMeshProUGUI collectibleCounterText;
+    //public TextMeshProUGUI scoreMultiplierText;
+    //public TextMeshProUGUI multiplierText;
+    public TextMeshProUGUI sectionStateText;
+    //public TextMeshProUGUI currentStateDuration;
+    //public TextMeshProUGUI remainingCollectiblesText;
+
+    [Header("Collectible Progression")]
+    [ReadOnlyAtrribute] public int totalCollectiblesInSection;
+    [ReadOnlyAtrribute] public int collectedInSection;
+
+    //[Header("Score System")]
+    //public int scoreMultiplier = 1;
+    //public int niceTimingMultiplierBonus = 1;
+    //public float niceTimingCooldown = 0f;
+    //private float niceTimingTimer = 0f;
+
+    //private HashSet<GameObject> collectedThisSection = new HashSet<GameObject>();
 
     void Awake()
     {
         Instance = this;
     }
 
+    void Start()
+    {
+        ApplySpeedMultiplier();
+        SetState(currentSectionIndex, currentStateIndex);
+        UpdateUI();
+    }
+
     void Update()
     {
-        timer -= Time.deltaTime;
+        currentStateTimer -= Time.deltaTime;
 
-        if (timer <= 0f)
+        if (currentStateTimer <= 0f)
         {
             AdvanceState();
         }
@@ -95,8 +106,32 @@ public class LevelManager : MonoBehaviour
         foreach (TileManager tile in allTiles)
         {
             if (tile != null)
-                tile.SetFadeInfo(timer, currentDuration);
+                tile.SetFadeInfo(currentStateTimer, currentDuration);
         }
+
+        /*if (niceTimingCooldown > 0f)
+        {
+            niceTimingTimer -= Time.deltaTime;
+        }*/
+    }
+
+    /*public void OnNiceTimingSuccess()
+    {
+        if (niceTimingCooldown > 0f && niceTimingTimer > 0f) return;
+
+        scoreMultiplier += niceTimingMultiplierBonus;
+        niceTimingTimer = niceTimingCooldown;
+
+        UpdateUI();
+    }*/
+
+    public void OnCollectibleCollected(GameObject collectibleGO)
+    {
+        collectedInSection++;
+
+        //initialSpeedMultiplier = Mathf.Max(initialSpeedMultiplier * speedMultiplierAdjuster, minSpeedMultiplier);
+        //ApplySpeedMultiplier();
+        UpdateUI();
     }
 
     void ApplySpeedMultiplier()
@@ -105,7 +140,7 @@ public class LevelManager : MonoBehaviour
         {
             foreach (var state in section.states)
             {
-                state.adjustedDuration = state.baseDuration * speedMultiplier;
+                state.adjustedDuration = state.baseDuration * initialSpeedMultiplier;
             }
         }
     }
@@ -113,10 +148,8 @@ public class LevelManager : MonoBehaviour
     void SetState(int sectionIndex, int stateIndex)
     {
         LevelState state = sections[sectionIndex].states[stateIndex];
-        timer = state.adjustedDuration;
+        currentStateTimer = state.adjustedDuration;
 
-
-        // Sanity check — make sure state has matching number of bools
         if (state.tileActivationStates.Count != allTiles.Count)
         {
             Debug.LogWarning("Tile state count doesn't match tile list count.");
@@ -140,17 +173,11 @@ public class LevelManager : MonoBehaviour
         if (nextStateIndex >= sections[nextSectionIndex].states.Count)
         {
             nextStateIndex = 0;
-            nextSectionIndex++;
-
-            if (nextSectionIndex >= sections.Length)
-            {
-                nextSectionIndex = 0;
-            }
+            nextSectionIndex = (nextSectionIndex + 1) % sections.Length;
         }
 
         LevelState nextState = sections[nextSectionIndex].states[nextStateIndex];
 
-        // Compare next state with current to set about-to-be flags
         for (int i = 0; i < allTiles.Count; i++)
         {
             if (allTiles[i] == null) continue;
@@ -162,33 +189,23 @@ public class LevelManager : MonoBehaviour
             allTiles[i].isAboutToBeInactive = current && !next;
         }
 
-        /*foreach (var tile in allTiles)
+        /*if (stateIndex == 0)
         {
-            if (tile != null)
-                tile.RefreshVisual();
+            ResetCollectiblesForSection();
         }*/
+
+        //ActivateCollectiblesForState();
 
         if (state.sfxIndex >= 0 && state.sfxIndex < stateSFX.Length && stateSFX[state.sfxIndex] != null)
         {
             audioSource.PlayOneShot(stateSFX[state.sfxIndex]);
         }
 
-        Debug.Log($"SECTION: {sections[sectionIndex].name} | STATE: {stateIndex + 1}");
-
-        PickAndLerpNewBGColor();
+        UpdateUI();
     }
-
 
     void AdvanceState()
     {
-        /*if (loopLastStateOnly &&
-            currentSectionIndex == sections.Length - 1 &&
-            currentStateIndex == sections[currentSectionIndex].states.Count - 1)
-        {
-            SetState(currentSectionIndex, currentStateIndex); // Just stay on this one
-            return;
-        }*/
-
         currentStateIndex++;
 
         if (currentStateIndex >= sections[currentSectionIndex].states.Count)
@@ -199,77 +216,113 @@ public class LevelManager : MonoBehaviour
             if (currentSectionIndex >= sections.Length)
             {
                 currentSectionIndex = 0;
-                //speedMultiplier *= speedMultiplierAdjuster;
-                //speedMultiplier += speedIncreaseAmount;
-                speedMultiplier *= speedMultiplierAdjuster;
+
+                initialSpeedMultiplier *= speedMultiplierAdjuster;
                 ApplySpeedMultiplier();
-                Debug.Log("Looped all sections — tempo increased.");
+
+                return;
             }
+
+            /*if (true)//if (collectedInSection < totalCollectiblesInSection)
+            {
+                // Loop section
+                currentStateIndex = 0;
+                SetState(currentSectionIndex, currentStateIndex);
+                return;
+            }
+            else
+            {
+                // Advance section
+                currentSectionIndex++;
+                currentStateIndex = 0;
+
+                if (currentSectionIndex >= sections.Length)
+                {
+                    SceneManager.LoadScene(nextLevelSceneName);
+                    return;
+                }
+            }*/
         }
 
         SetState(currentSectionIndex, currentStateIndex);
     }
 
-    public void DealBossDamage(int amount)
+    /*void ResetCollectiblesForSection()
     {
-        if (currentBossHealth <= 0) return;
+        collectedThisSection.Clear();
+        collectedInSection = 0;
+        totalCollectiblesInSection = 0;
 
-        currentBossHealth -= amount;
-        currentBossHealth = Mathf.Max(currentBossHealth, 0);
-
-        float percentLost = 1f - ((float)currentBossHealth / bossMaxHealth);
-        int step = Mathf.FloorToInt(percentLost / speedStepPercent);
-
-        if (step > lastSpeedStep)
+        for (int i = 0; i < allTiles.Count; i++)
         {
-            lastSpeedStep = step;
-            //speedMultiplier += speedIncreaseAmount;
-            speedMultiplier *= speedMultiplierAdjuster;
-            ApplySpeedMultiplier();
-            Debug.Log("Boss HP dropped — increased speed.");
+            TileManager tile = allTiles[i];
+            if (tile == null) continue;
+
+            Transform tileTf = tile.transform;
+
+            //no more child collectibles
+            for (int j = 0; j < tileTf.childCount; j++)
+            {
+                var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
+                if (col != null)
+                {
+                    col.ResetCollectible();
+
+                    if (sections[currentSectionIndex].collectibleTileBools.Count > i &&
+                        sections[currentSectionIndex].collectibleTileBools[i])
+                    {
+                        totalCollectiblesInSection++;
+                    }
+                }
+            }
+        }
+    }*/
+
+    /*void ActivateCollectiblesForState()
+    {
+        var flags = sections[currentSectionIndex].collectibleTileBools;
+
+        if (flags.Count != allTiles.Count) return;
+
+        for (int i = 0; i < allTiles.Count; i++)
+        {
+            TileManager tile = allTiles[i];
+            if (tile == null) continue;
+
+            bool shouldHaveCollectible = flags[i];
+            bool tileIsActive = tile.isActive;
+
+            Transform tileTf = tile.transform;
+
+            //for (int j = 0; j < tileTf.childCount; j++)
+            {
+                //var col = tileTf.GetChild(j).GetComponent<CollectableBehaviors>();
+                var col = tileTf.GetComponentInChildren<CollectableBehaviors>();
+                if (col != null && !col.hasBeenCollected)
+                {
+                    //col.TryActivate(true); 
+                    bool shouldShow = shouldHaveCollectible && tileIsActive && !col.hasBeenCollected;
+                    col.TryActivate(shouldShow);
+                }
+            }
+        }
+    }*/
+
+    void UpdateUI()
+    {
+        if (collectibleCounterText != null)
+        {
+            collectibleCounterText.text = $"{collectedInSection}/{totalCollectiblesInSection}";
         }
 
-        if (currentBossHealth <= 0)
+        /*if (multiplierText != null)
         {
-            StartCoroutine(BossDeathSequence());
+            multiplierText.text = $"x{scoreMultiplier}";
+        }*/
+
+        if (sectionStateText != null)
+        {
+            sectionStateText.text = $"Section: {sections[currentSectionIndex].name} | State: {currentStateIndex + 1}/{sections[currentSectionIndex].states.Count}";
         }
-    }
-
-    IEnumerator BossDeathSequence()
-    {
-        Debug.Log("Boss defeated!");
-        yield return new WaitForSeconds(bossDeathAnimationTime);
-        SceneManager.LoadScene(nextLevelSceneName);
-    }
-
-    void PickAndLerpNewBGColor()
-    {
-        List<Color> colors = sections[currentSectionIndex].backgroundColorCycle;
-
-        if (colors == null || colors.Count == 0 || background == null) return;
-
-        Color newColor;
-        do
-        {
-            newColor = colors[Random.Range(0, colors.Count)];
-        } while (newColor == currentBGColor);
-
-        StartCoroutine(LerpBackgroundColor(newColor));
-        currentBGColor = newColor;
-    }
-
-    IEnumerator LerpBackgroundColor(Color targetColor)
-    {
-        Color startColor = background.color;
-        float t = 0f;
-
-        while (t < bgLerpDuration)
-        {
-            t += Time.deltaTime;
-            background.color = Color.Lerp(startColor, targetColor, t / bgLerpDuration);
-            yield return null;
-        }
-
-        background.color = targetColor;
     }
 }

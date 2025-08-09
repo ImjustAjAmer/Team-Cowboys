@@ -49,6 +49,7 @@ MonoBehaviour:
   playerSprite: {fileID: 3018892823021384866}
   tileTag: Tile
   currentStandingTile: {fileID: 0}
+  animator: {fileID: 0}
   isJumping: 0
   isJumpingTime: 0.215
   jumpBufferTime: 0.195

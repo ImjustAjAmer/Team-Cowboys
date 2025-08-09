@@ -1,30 +1,66 @@
-using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class CollectableBehaviors : MonoBehaviour
 {
-    public enum CollectibleTier { Tier1, Tier2, Tier3 }
-    public CollectibleTier tier;
+    Scene currentScene;
+    //int currentSceneIndex = currentScene.buildIndex;
 
-    private int GetDamage()
+    /*public void OnTriggerEnter2D(Collider2D collision)
     {
-        switch (tier)
+        Debug.Log("Trigger hit by: " + collision.gameObject.name + " with tag: " + collision.tag);
+
+        currentScene = SceneManager.GetActiveScene();
+        int currentSceneIndex = currentScene.buildIndex;
+
+        if (collision.CompareTag("Player"))
         {
-            case CollectibleTier.Tier1: return 10;
-            case CollectibleTier.Tier2: return 50;
-            case CollectibleTier.Tier3: return 100;
-            default: return 0;
+            SceneManager.LoadScene(++currentSceneIndex);
+            Debug.Log("hit player");
         }
-    }
+    }*/
 
     public void Collect()
     {
-        if (LevelManager.Instance != null)
-        {
-            LevelManager.Instance.DealBossDamage(GetDamage());
-        }
+        currentScene = SceneManager.GetActiveScene();
+        int currentSceneIndex = currentScene.buildIndex;
 
-        Destroy(gameObject);
+        SceneManager.LoadScene(++ currentSceneIndex);
+        Debug.Log("hit player");
     }
+
+
+    /*public void Collect()
+    {
+        currentScene = SceneManager.GetActiveScene();
+        int currentSceneIndex = currentScene.buildIndex;
+
+        SceneManager.LoadScene(currentSceneIndex++);
+        Debug.Log("hit player");
+    }*/
+
+    /*public bool hasBeenCollected = false;
+
+    public void Collect()
+    {
+        if (hasBeenCollected) return;
+
+        hasBeenCollected = true;
+        gameObject.SetActive(false);
+        LevelManager.Instance.OnCollectibleCollected(this.gameObject);
+    }
+
+    public void ResetCollectible()
+    {
+        hasBeenCollected = false;
+        //gameObject.SetActive(false);
+        TryActivate(false);
+    }
+
+    public void TryActivate(bool tileIsActive)
+    {
+        // Show if this hasn't been collected and its tile is active
+        gameObject.SetActive(tileIsActive && !hasBeenCollected);
+    }*/
 }

@@ -1,21 +1,16 @@
 using UnityEngine;
-
 using System.Collections;
-
 using UnityEngine.SceneManagement;
-
-
 
 public class PlayerBehaviors : MonoBehaviour
 {
-
     public static PlayerBehaviors Instance;
     public float moveDistance = 1f;
 
     Collider2D playerCollider;
     public SpriteRenderer playerSprite;
 
-    public string tileTag;
+    public string tileTag = "TileTag";
     [ReadOnlyAtrribute] public TileManager currentStandingTile;
 
     //reference to the animator
@@ -37,9 +32,6 @@ public class PlayerBehaviors : MonoBehaviour
     private Quaternion originalRotation;
 
     private Playercontrols playerControls;
-
-    //public AudioSource[] allAudio;
-    //public AudioClip[] deathSound;
 
     private void Awake()
     {
@@ -119,6 +111,20 @@ public class PlayerBehaviors : MonoBehaviour
         {
             StartCoroutine(HandleGameOver());
         }
+
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+        foreach (Collider2D col in hits)
+        {
+            if (col.CompareTag("Collectible"))
+            {
+                CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
+                if (collectible != null)
+                {
+                    collectible.Collect();
+                }
+            }
+        }
+
     }
 
     private void HandleInput(string direction, bool IsPressed)
@@ -155,7 +161,6 @@ public class PlayerBehaviors : MonoBehaviour
 
     }
 
-
     IEnumerator JumpingState(string direction)
     {
         isJumping = true;
@@ -185,33 +190,24 @@ public class PlayerBehaviors : MonoBehaviour
 
         currentStandingTile = null;
 
-        //Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         bool landedOnTile = false;
 
         foreach (Collider2D col in hits)
         {
-            // Collectible handling
-            if (col.CompareTag("Collectible"))
+            /*if (col.CompareTag("Collectible"))
             {
                 CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
                 if (collectible != null)
                 {
-                    collectible.Collect(); // Ensure you have this method
+                    collectible.Collect();
                 }
-            }
+            }*/
 
             if (col.CompareTag(tileTag))
             {
                 currentStandingTile = col.GetComponent<TileManager>();
                 currentStandingTile.isPlayerStanding = true;
-
-                /*if (currentStandingTile.isNiceTiming)
-                {
-                    Debug.Log("NICE TIMING!");
-                    if (LevelManager.Instance != null)
-                        LevelManager.Instance.DealBossDamage(currentStandingTile.niceTimingDamage);
-                }*/
 
                 if (!currentStandingTile.isActive)
                 {
@@ -226,7 +222,6 @@ public class PlayerBehaviors : MonoBehaviour
         }
 
         isJumping = false;
-
 
         if (!landedOnTile)
         {
@@ -259,8 +254,7 @@ public class PlayerBehaviors : MonoBehaviour
     {
         Gizmos.color = Color.red;
 
-        // This assumes the detection uses OverlapPointAll(transform.position)
-        // You can visualize it with a small sphere
+        // Visualize OverlapPointAll(transform.position) with a small sphere
         Gizmos.DrawWireSphere(transform.position, 0.05f);
 
         // Optional: visualize the player's actual collider bounds
