@@ -20193,19 +20193,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1952137858227289699, guid: fb274006d302ff84a9cbb5c4d519fc78, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 1952137858227289699, guid: fb274006d302ff84a9cbb5c4d519fc78, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -34
       objectReference: {fileID: 0}
     - target: {fileID: 4483876926610310732, guid: fb274006d302ff84a9cbb5c4d519fc78, type: 3}
       propertyPath: m_fontSize
       value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 4483876926610310732, guid: fb274006d302ff84a9cbb5c4d519fc78, type: 3}
+      propertyPath: m_margin.w
+      value: 71.6053
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483876926610310732, guid: fb274006d302ff84a9cbb5c4d519fc78, type: 3}
       propertyPath: m_margin.z
-      value: 130.98965
+      value: 71.91525
       objectReference: {fileID: 0}
     - target: {fileID: 4483876926610310732, guid: fb274006d302ff84a9cbb5c4d519fc78, type: 3}
       propertyPath: m_fontSizeBase

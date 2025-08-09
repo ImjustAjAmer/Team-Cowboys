@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Diagnostics.CodeAnalysis;
 
 public class PlayerBehaviors : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class PlayerBehaviors : MonoBehaviour
 
     //reference to the animator
     public Animator animator;
+    public AudioManager audioManager;
 
     //isJumping
     [ReadOnlyAtrribute] public bool isJumping = false;
@@ -38,6 +40,8 @@ public class PlayerBehaviors : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
         playerControls = new Playercontrols();
         animator = GetComponentInChildren<Animator>();
+
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 
         playerControls.Controls.MoveUp.performed += ctx => HandleInput("Up", true);
         playerControls.Controls.MoveUp.canceled += ctx => HandleInput("Up", false);
@@ -110,6 +114,7 @@ public class PlayerBehaviors : MonoBehaviour
         if (!isJumping && currentStandingTile != null && !currentStandingTile.isActive)
         {
             StartCoroutine(HandleGameOver());
+            
         }
 
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
@@ -238,7 +243,7 @@ public class PlayerBehaviors : MonoBehaviour
 
         // Flip the sprite upside down
         playerSprite.transform.rotation = Quaternion.Euler(0, 0, 180);
-
+        audioManager.PlaySFX(audioManager.Death);
         // Mute all other sounds
 
         // Freeze input
@@ -247,7 +252,7 @@ public class PlayerBehaviors : MonoBehaviour
         // Reload scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        
+       
     }
 
     private void OnDrawGizmos()
