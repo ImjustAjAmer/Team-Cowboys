@@ -11,16 +11,19 @@ public class TimerBehavior : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI timerText;
     public float remaingTime;
+    
     private PlayerBehaviors playerBehaviors;
     private CollectableBehaviors collectableBehaviors;
-    private bool isDead = false;
-    public float deathFreezeDuration = 0.5f;
+
+    //private bool isDead = false;
+    //public float deathFreezeDuration = 0.5f;
+
     private Quaternion originalRotation;
     public bool isTimeRunning = true;
 
     public SpriteRenderer playerSprite;
 
-    public int secondsAdded;
+    //public int secondsAdded;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -38,7 +41,7 @@ public class TimerBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isDead) return;
+        //if (isDead) return;
 
         if (isTimeRunning && remaingTime > 0)
         {
@@ -50,8 +53,8 @@ public class TimerBehavior : MonoBehaviour
 
             isTimeRunning = false;
 
-            HandleGameOver();
-            StartCoroutine(HandleGameOver());
+            //HandleGameOver();
+            //StartCoroutine(HandleGameOver());
             UpdateTimerDisplay();
         }
 
@@ -70,14 +73,14 @@ public class TimerBehavior : MonoBehaviour
         }
     }
 
-    public void addToTimer(float timeToAdd)
+    /*public void addToTimer(float timeToAdd)
     {
         remaingTime += timeToAdd;
         UpdateTimerDisplay();
-    }
+    }*/
 
 
-    public IEnumerator HandleGameOver()
+    /*public IEnumerator HandleGameOver()
     {
         isDead = true;
         originalRotation = playerSprite.transform.rotation;
@@ -98,6 +101,6 @@ public class TimerBehavior : MonoBehaviour
 
         // Reload scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    }*/
 
 }
