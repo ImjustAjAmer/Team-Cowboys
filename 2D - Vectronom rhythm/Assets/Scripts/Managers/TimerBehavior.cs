@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using TMPro;
 
 using System.Collections;
@@ -73,34 +73,34 @@ public class TimerBehavior : MonoBehaviour
         }
     }
 
-    /*public void addToTimer(float timeToAdd)
+
+}*/
+
+using UnityEngine;
+using TMPro;
+
+using System.Collections;
+using UnityEngine.SceneManagement;
+
+public class TimerBehavior : MonoBehaviour
+{
+    [Header("Componets")]
+    public TextMeshProUGUI timerText;
+    
+    [Header("Timer Settings")]
+    public float currentTime;
+    public bool countDown;
+
+    void Start()
     {
-        remaingTime += timeToAdd;
-        UpdateTimerDisplay();
-    }*/
+        
+    }
 
-
-    /*public IEnumerator HandleGameOver()
+    void Update()
     {
-        isDead = true;
-        originalRotation = playerSprite.transform.rotation;
-
-        // Flip the sprite upside down
-        playerSprite.transform.rotation = Quaternion.Euler(0, 0, 180);
-
-        // Darken the sprite
-        //Color c = playerSprite.color;
-        //c = Color.black;
-        //playerSprite.color = c;
-
-        // Freeze input
-        yield return new WaitForSeconds(deathFreezeDuration);
-
-        // Reset rotation (optional if you're reloading scene anyway)
-        //playerSprite.transform.rotation = originalRotation;
-
-        // Reload scene
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }*/
+        currentTime = countDown ? currentTime -= Time.deltaTime : currentTime += Time.deltaTime;
+        timerText.text = currentTime.ToString("[00:00]");
+    }
 
 }
+
