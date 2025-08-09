@@ -22,7 +22,7 @@ public class TileManager : MonoBehaviour
 
     private SpriteRenderer sr;
     private LevelManager levelManager;
-    //private PlayerBehaviors playerBehaviors;
+    private PlayerBehaviors playerBehaviors;
 
 
     //[Header("Nice Timing")]
@@ -47,7 +47,7 @@ public class TileManager : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         levelManager = LevelManager.Instance;
-        //playerBehaviors = FindFirstObjectByType<PlayerBehaviors>();
+        playerBehaviors = FindFirstObjectByType<PlayerBehaviors>();
 
         //if (sr != null)
             //defaultColor = sr.color;
@@ -115,7 +115,7 @@ public class TileManager : MonoBehaviour
             child.color = cc;
         }
 
-        playerShadowPNG.SetActive(isPlayerStanding);
+        playerShadowPNG.SetActive(isPlayerStanding && !playerBehaviors.isJumping);
     }
 
     public void SetFadeInfo(float timer, float duration)
