@@ -13088,6 +13088,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3896291034002042870, guid: 650742db64941df48afca11f7130a190, type: 3}
+      propertyPath: Death
+      value: 
+      objectReference: {fileID: 8300000, guid: 45525572f7c55ea4ab41ebf3687c3598, type: 3}
+    - target: {fileID: 3896291034002042870, guid: 650742db64941df48afca11f7130a190, type: 3}
+      propertyPath: deathSFX
+      value: 
+      objectReference: {fileID: 1464369100}
+    - target: {fileID: 3896291034002042870, guid: 650742db64941df48afca11f7130a190, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -13099,6 +13107,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5561193306745626896, guid: 650742db64941df48afca11f7130a190, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 45525572f7c55ea4ab41ebf3687c3598, type: 3}
+    - target: {fileID: 5561193306745626896, guid: 650742db64941df48afca11f7130a190, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 45525572f7c55ea4ab41ebf3687c3598, type: 3}
     - target: {fileID: 5722120455351940330, guid: 650742db64941df48afca11f7130a190, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
@@ -13156,6 +13172,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9b37e630bd130489ae1be33f8b6a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!82 &1464369100 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5561193306745626896, guid: 650742db64941df48afca11f7130a190, type: 3}
+  m_PrefabInstance: {fileID: 1464369098}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1483587021
 PrefabInstance:
   m_ObjectHideFlags: 0

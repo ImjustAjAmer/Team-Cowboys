@@ -6,12 +6,13 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Sources")]
 
-    public AudioSource SFX;
+    public AudioSource deathSFX;
+    //public AudioSource buttonSFX;
 
     [Header("Audio Clips")]
 
     public AudioClip Death;
-
+    //public AudioClip buttonSumbitSFX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,7 +28,9 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip)
     {
-        SFX.PlayOneShot(clip);
+        deathSFX.PlayOneShot(clip);
+        //buttonSFX.PlayOneShot(clip);
+        
     }
 
 }
