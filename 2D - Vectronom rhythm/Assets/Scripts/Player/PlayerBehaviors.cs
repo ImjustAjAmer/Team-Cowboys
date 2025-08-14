@@ -37,6 +37,8 @@ public class PlayerBehaviors : MonoBehaviour
 
     private void Awake()
     {
+        //Read performed and canceled input from Input Map
+
         playerCollider = GetComponent<Collider2D>();
         playerControls = new Playercontrols();
         animator = GetComponentInChildren<Animator>();
@@ -55,9 +57,7 @@ public class PlayerBehaviors : MonoBehaviour
         playerControls.Controls.MoveRight.performed += ctx => HandleInput("Right", true);
         playerControls.Controls.MoveRight.canceled += ctx => HandleInput("Right", false);
 
-        //set up callback for reset and quit
-        playerControls.Controls.Reset.performed += ctx => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        playerControls.Controls.Quit.performed += ctx => Application.Quit();
+
 
     }
 

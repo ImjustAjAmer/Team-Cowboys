@@ -7,13 +7,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class LevelLoader : MonoBehaviour
 {
+
     public GameObject loadingScreen;
     public Slider slider;
+
 
     public void LoadLevel(int levelIndex)
     {
         loadingScreen.SetActive(true);
         StartCoroutine(LoadAsynchronously(levelIndex));
+        Time.timeScale = 1f;
     }
 
     IEnumerator LoadAsynchronously(int levelIndex)

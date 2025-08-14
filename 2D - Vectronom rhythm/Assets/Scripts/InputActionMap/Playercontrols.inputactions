@@ -40,24 +40,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Reset",
-                    "type": "Button",
-                    "id": "619fa587-7c6a-4021-8048-f3ba4c6d3563",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Quit",
-                    "type": "Button",
-                    "id": "a98df671-1865-45af-8421-c805765547f1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -148,48 +130,43 @@
                     "action": "MoveRight",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "eb78ea8a-6a86-41d0-81f1-0bc18067274e",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "2c2476aa-0155-4174-ba1b-d1e7635b462a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
                 {
                     "name": "",
-                    "id": "303d2cef-71e4-4222-b382-b7617b1ad8b5",
+                    "id": "564c9b3b-9fe3-49c4-af88-d5ff944f2bac",
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Reset",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "be271024-0444-4722-9b37-2cb23b56cc88",
-                    "path": "<Keyboard>/r",
+                    "id": "d6517bc5-a898-47d0-b759-d88b8f270a52",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";KBM",
-                    "action": "Reset",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ef13e226-9d93-4697-ab6f-f57b2599ee65",
-                    "path": "<Gamepad>/select",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4b0a1d35-1dd5-4fd2-9c1a-91841262d3b1",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";KBM",
-                    "action": "Quit",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
