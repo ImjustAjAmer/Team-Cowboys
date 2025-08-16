@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &189455013
+--- !u!1001 &500932647
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -129,11 +129,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1178995984418728819, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: buildINDEX
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3285449549978695407, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_Name
-      value: SceneTransition
+      value: SceneTransition (1)
       objectReference: {fileID: 0}
     - target: {fileID: 5796356047983396977, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -180,10 +180,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
---- !u!114 &189455014 stripped
+--- !u!114 &500932648 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1178995984418728819, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
-  m_PrefabInstance: {fileID: 189455013}
+  m_PrefabInstance: {fileID: 500932647}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -328,7 +328,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!1001 &979232815
+--- !u!1001 &697782278
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -338,11 +338,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1178995984418728819, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: buildINDEX
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3285449549978695407, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_Name
-      value: SceneTransition (1)
+      value: SceneTransition
       objectReference: {fileID: 0}
     - target: {fileID: 5796356047983396977, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -389,10 +389,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
---- !u!114 &979232816 stripped
+--- !u!114 &697782279 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1178995984418728819, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
-  m_PrefabInstance: {fileID: 979232815}
+  m_PrefabInstance: {fileID: 697782278}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -1264,7 +1264,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 979232816}
+      - m_Target: {fileID: 697782279}
         m_TargetAssemblyTypeName: LevelLoader, Assembly-CSharp
         m_MethodName: LoadScene
         m_Mode: 1
@@ -1598,7 +1598,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 189455014}
+      - m_Target: {fileID: 500932648}
         m_TargetAssemblyTypeName: LevelLoader, Assembly-CSharp
         m_MethodName: LoadScene
         m_Mode: 1
@@ -2178,8 +2178,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 634285214}
   - {fileID: 1134063922}
-  - {fileID: 189455013}
-  - {fileID: 979232815}
+  - {fileID: 697782278}
+  - {fileID: 500932647}
   - {fileID: 2003422047}
   - {fileID: 1279145494}
   - {fileID: 1612852666}
