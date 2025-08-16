@@ -125,7 +125,7 @@ public class PlayerBehaviors : MonoBehaviour
                 CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
                 if (collectible != null)
                 {
-                    collectible.Collect();
+                    collectible.LoadScene();
                 }
             }
         }

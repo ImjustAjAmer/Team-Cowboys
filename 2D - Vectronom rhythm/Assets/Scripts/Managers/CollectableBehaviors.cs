@@ -4,7 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class CollectableBehaviors : MonoBehaviour
 {
-    Scene currentScene;
+    public ItemTransition itemTransition;
+
+    //Scene currentScene;
     //int currentSceneIndex = currentScene.buildIndex;
 
     /*public void OnTriggerEnter2D(Collider2D collision)
@@ -20,15 +22,22 @@ public class CollectableBehaviors : MonoBehaviour
             Debug.Log("hit player");
         }
     }*/
+    
+    //make it work with the donut//
 
-    public void Collect()
+    public void LoadScene()
+    {
+        itemTransition.LoadScreen();
+    }
+
+    /*public void Collect()
     {
         currentScene = SceneManager.GetActiveScene();
         int currentSceneIndex = currentScene.buildIndex;
 
         SceneManager.LoadScene(++ currentSceneIndex);
         Debug.Log("hit player");
-    }
+    }*/
 
 
     /*public void Collect()
