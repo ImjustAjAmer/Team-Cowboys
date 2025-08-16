@@ -7818,6 +7818,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83d02d9d1ecb26d43823d3fe8a85bf01, type: 3}
+--- !u!1 &641370105 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9000074518764095258, guid: 83d02d9d1ecb26d43823d3fe8a85bf01, type: 3}
+  m_PrefabInstance: {fileID: 641370104}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &655634579
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10296,7 +10301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 641370105}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &1089251177
@@ -20431,12 +20436,12 @@ SceneRoots:
   - {fileID: 2108504558769953215}
   - {fileID: 71876416}
   - {fileID: 1157249039}
-  - {fileID: 1089251177}
   - {fileID: 641370104}
   - {fileID: 338378869}
   - {fileID: 229758074}
   - {fileID: 1677005151}
   - {fileID: 134278399}
+  - {fileID: 1089251177}
   - {fileID: 420430524}
   - {fileID: 728106450}
   - {fileID: 1397239371}
