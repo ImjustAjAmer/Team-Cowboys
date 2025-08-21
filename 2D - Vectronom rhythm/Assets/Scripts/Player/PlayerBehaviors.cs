@@ -243,6 +243,8 @@ public class PlayerBehaviors : MonoBehaviour
 
         // Flip the sprite upside down
         playerSprite.transform.rotation = Quaternion.Euler(0, 0, 180);
+
+
         audioManager.PlaySFX(audioManager.Death);
         // Mute all other sounds
 
