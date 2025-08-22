@@ -111,14 +111,14 @@ MonoBehaviour:
       sfxIndex: 1
     sectionCollectibles: []
   initialSpeedMultiplier: 1
-  speedMultiplierAdjuster: 0.95
+  speedMultiplierAdjuster: 0.875
   nextLevelSceneName: 
   stateSFX:
   - {fileID: 8300000, guid: c540d3944c192f844988ac6e0d74e604, type: 3}
   - {fileID: 8300000, guid: ea722dc08d5fc9344b545c4d6e20c8eb, type: 3}
   audioSource: {fileID: 0}
-  globalMaxAlpha: 0.075
-  globalMinAlpha: 0.5
+  globalMaxAlpha: 0.175
+  globalMinAlpha: 0.8
   collectibleCounterText: {fileID: 0}
   sectionStateText: {fileID: 0}
   totalCollectiblesInSection: 0
