@@ -543,7 +543,7 @@ PrefabInstance:
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: 'stateSFX.Array.data[0]'
       value: 
-      objectReference: {fileID: 8300000, guid: 614913dce8a3c9547bd16c3cd2e5291a, type: 3}
+      objectReference: {fileID: 8300000, guid: c540d3944c192f844988ac6e0d74e604, type: 3}
     - target: {fileID: 8817509167478774647, guid: 9f63b60162ff07842ae5bcb6ab57c2cf, type: 3}
       propertyPath: 'stateSFX.Array.data[1]'
       value: 
@@ -11899,7 +11899,7 @@ AudioSource:
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 2
+  m_Pitch: 1.5
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -15254,8 +15254,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: a1e10cf387f83284d93086c1fca3e077, type: 3}
-  m_Resource: {fileID: 8300000, guid: a1e10cf387f83284d93086c1fca3e077, type: 3}
+  m_audioClip: {fileID: 8300000, guid: f9a32c93e7dd0b6479e3457626bf97b8, type: 3}
+  m_Resource: {fileID: 8300000, guid: f9a32c93e7dd0b6479e3457626bf97b8, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.25
   m_Pitch: 1
