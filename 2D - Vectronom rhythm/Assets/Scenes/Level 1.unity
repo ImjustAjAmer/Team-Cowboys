@@ -20123,6 +20123,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_Size.x
+      value: 3.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_Size.y
+      value: 4.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 3767737114265692236, guid: acf05b76dd1766f4987bd25e95ff1f07, type: 3}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4696042966750461126, guid: 04881e471f8873540bf060193c5ba396, type: 3}
       propertyPath: audioManager
       value: 
