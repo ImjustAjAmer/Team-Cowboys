@@ -116,6 +116,8 @@ public class TileManager : MonoBehaviour
             }
         }
 
+        //just comemtned out
+
         Color c = sr.color;
         c.a = alpha;
         sr.color = c;
