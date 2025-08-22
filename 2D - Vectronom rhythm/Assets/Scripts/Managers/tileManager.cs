@@ -16,6 +16,7 @@ public class TileManager : MonoBehaviour
     //private Vector3 originalScale;
     //private Color originalColor;
     public float minScale = 0.3f;
+    public float maxScale = 0.5f;
 
     private float stateTimer = 0f;
     private float stateDuration = 1f;
@@ -24,6 +25,10 @@ public class TileManager : MonoBehaviour
     private LevelManager levelManager;
     private PlayerBehaviors playerBehaviors;
 
+    public Color aboutToBeInactiveColor = Color.red;
+    public Color ogColor = Color.yellow;
+
+    public float transitionOffset = 0.5f;
 
     //[Header("Nice Timing")]
     //public Color niceTimingColor = Color.yellow;
@@ -77,8 +82,13 @@ public class TileManager : MonoBehaviour
             if (isAboutToBeActive)
             {
                 float t = 1f - (stateTimer / stateDuration);
+                //float t = transitionOffset - (stateTimer / stateDuration);
+                
                 alpha = Mathf.Lerp(0f, max, t);
-                scale = Mathf.Lerp(0f, 1f, t);
+                scale = Mathf.Lerp(minScale, maxScale, t);
+
+                //scale = Mathf.Lerp(0f, 1f, t);
+                //scale = Mathf.Lerp(0f, maxScale, t);
             }
             else
             {
@@ -93,11 +103,16 @@ public class TileManager : MonoBehaviour
                 float t = 1f - (stateTimer / stateDuration);
                 alpha = Mathf.Lerp(1f, min, t);
                 //scale = Mathf.Lerp(1f, minScale, t);
+
+                //sr.color = aboutToBeInactiveColor;
+                sr.color = Color.Lerp(ogColor, aboutToBeInactiveColor, t);
             }
             else
             {
                 alpha = 1f;
                 scale = 1f;
+
+                sr.color = ogColor;
             }
         }
 
