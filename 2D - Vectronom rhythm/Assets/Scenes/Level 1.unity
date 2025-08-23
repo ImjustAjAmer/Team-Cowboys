@@ -3036,6 +3036,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df2768129274dda41bfc26929df7543c, type: 3}
+--- !u!95 &476346930 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5340855654223501059, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
+  m_PrefabInstance: {fileID: 673048508}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &518130720
 GameObject:
   m_ObjectHideFlags: 0
@@ -7690,7 +7695,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3285449549978695407, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5796356047983396977, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7731,6 +7736,18 @@ PrefabInstance:
     - target: {fileID: 5796356047983396977, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8622013217576483304, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8622013217576483304, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8622013217576483304, guid: 9ce13a3bc52236042a2c8de7f30fdcf0, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10463,6 +10480,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1316365155567177183, guid: bebee0990847fed469b9c09520eeea1e, type: 3}
+      propertyPath: transitionController
+      value: 
+      objectReference: {fileID: 476346930}
     - target: {fileID: 3342028245642876667, guid: bebee0990847fed469b9c09520eeea1e, type: 3}
       propertyPath: m_Name
       value: ItemTransiton
@@ -10510,6 +10531,18 @@ PrefabInstance:
     - target: {fileID: 6051691135236470657, guid: bebee0990847fed469b9c09520eeea1e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742254841587141331, guid: bebee0990847fed469b9c09520eeea1e, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742254841587141331, guid: bebee0990847fed469b9c09520eeea1e, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8742254841587141331, guid: bebee0990847fed469b9c09520eeea1e, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
