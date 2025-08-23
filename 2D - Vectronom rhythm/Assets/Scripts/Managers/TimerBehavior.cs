@@ -79,8 +79,11 @@ public class TimerBehavior : MonoBehaviour
 using UnityEngine;
 using TMPro;
 
-using System.Collections;
-using UnityEngine.SceneManagement;
+
+
+
+
+
 
 public class TimerBehavior : MonoBehaviour
 {
@@ -93,13 +96,20 @@ public class TimerBehavior : MonoBehaviour
 
     void Start()
     {
-        
+        if(timerText != null)
+        {
+            Debug.LogError("TimerText not assigned in inspector");
+        }
     }
 
     void Update()
     {
-        currentTime = countDown ? currentTime -= Time.deltaTime : currentTime += Time.deltaTime;
-        timerText.text = currentTime.ToString("[00:00]");
+        currentTime += Time.deltaTime;
+        if (currentTime <= 0) currentTime = 0;
+
+        int minutes = (int)(currentTime / 60);
+        int seconds = (int)(currentTime % 60);
+        timerText.text = string.Format("{0}:{1:00}", minutes, seconds);
     }
 
 }
