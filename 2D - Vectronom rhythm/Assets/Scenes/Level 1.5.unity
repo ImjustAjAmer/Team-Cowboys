@@ -3373,6 +3373,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.AudioClip, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 763655231037972324, guid: 83d02d9d1ecb26d43823d3fe8a85bf01, type: 3}
+      propertyPath: m_text
+      value: 0:00
+      objectReference: {fileID: 0}
     - target: {fileID: 1197242747673518586, guid: 83d02d9d1ecb26d43823d3fe8a85bf01, type: 3}
       propertyPath: m_Pivot.x
       value: 0
