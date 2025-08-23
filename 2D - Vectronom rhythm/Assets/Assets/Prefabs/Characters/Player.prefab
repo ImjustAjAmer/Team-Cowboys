@@ -50,10 +50,11 @@ MonoBehaviour:
   tileTag: Tile
   currentStandingTile: {fileID: 0}
   animator: {fileID: 0}
+  audioManager: {fileID: 0}
   isJumping: 0
   isJumpingTime: 0.215
   jumpBufferTime: 0.195
-  deathFreezeDuration: 0.25
+  deathFreezeDuration: 1
 --- !u!1 &4510227191347445968
 GameObject:
   m_ObjectHideFlags: 0
