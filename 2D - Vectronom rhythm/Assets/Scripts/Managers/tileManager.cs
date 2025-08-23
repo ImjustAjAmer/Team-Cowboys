@@ -17,6 +17,8 @@ public class TileManager : MonoBehaviour
     //private Color originalColor;
     public float minScale = 0.3f;
     public float maxScale = 0.5f;
+    public float minAlpha = 0.5f;
+    public float maxAlpha = 0.2f;
 
     private float stateTimer = 0f;
     private float stateDuration = 1f;
@@ -84,7 +86,9 @@ public class TileManager : MonoBehaviour
                 float t = 1f - (stateTimer / stateDuration);
                 //float t = transitionOffset - (stateTimer / stateDuration);
                 
-                alpha = Mathf.Lerp(0f, max, t);
+                //alpha = Mathf.Lerp(0f, max, t);
+                alpha = Mathf.Lerp(0f, maxAlpha, t);
+
                 scale = Mathf.Lerp(minScale, maxScale, t);
 
                 //scale = Mathf.Lerp(0f, 1f, t);
@@ -101,7 +105,8 @@ public class TileManager : MonoBehaviour
             if (isAboutToBeInactive)
             {
                 float t = 1f - (stateTimer / stateDuration);
-                alpha = Mathf.Lerp(1f, min, t);
+                //alpha = Mathf.Lerp(1f, min, t);
+                alpha = Mathf.Lerp(1f, minAlpha, t);
                 //scale = Mathf.Lerp(1f, minScale, t);
 
                 //sr.color = aboutToBeInactiveColor;
