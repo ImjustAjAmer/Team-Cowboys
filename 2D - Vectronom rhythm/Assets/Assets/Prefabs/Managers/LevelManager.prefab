@@ -111,7 +111,7 @@ MonoBehaviour:
       sfxIndex: 1
     sectionCollectibles: []
   initialSpeedMultiplier: 1
-  speedMultiplierAdjuster: 0.875
+  speedMultiplierAdjuster: 0.8
   nextLevelSceneName: 
   stateSFX:
   - {fileID: 8300000, guid: c540d3944c192f844988ac6e0d74e604, type: 3}
