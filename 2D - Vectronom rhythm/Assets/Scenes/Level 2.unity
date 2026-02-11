@@ -24360,7 +24360,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 396010827553367364, guid: 83d02d9d1ecb26d43823d3fe8a85bf01, type: 3}
       propertyPath: currentTime
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 535361847413724845, guid: 83d02d9d1ecb26d43823d3fe8a85bf01, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
