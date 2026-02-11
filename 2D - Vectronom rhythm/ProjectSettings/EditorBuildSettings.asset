@@ -9,8 +9,23 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: e206298cd1eccdd4aa81d217f2a53d4d
   - enabled: 1
+    path: Assets/Scenes/Level Section.unity
+    guid: 9b2c044a389631e43b8c9c6395d31738
+  - enabled: 1
+    path: Assets/Scenes/Planet Section.unity
+    guid: bc50a41d2bb23a347a1b289d07ddf18c
+  - enabled: 1
     path: Assets/Scenes/Planet Section 2.unity
     guid: ad7491d6e96d7a844a1d8a96ea5d9487
+  - enabled: 1
+    path: Assets/Scenes/Level 1.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Level 1.5.unity
+    guid: 347e88cf6d8704e4291ab0a84b9c5d77
+  - enabled: 1
+    path: Assets/Scenes/Level 2.unity
+    guid: f15bfee809a73ca4fa11dc537d44f06e
   - enabled: 1
     path: Assets/Scenes/Level 3.unity
     guid: be404effe1a1d01409769dc783dc056d

@@ -46,7 +46,7 @@ public class LevelLoader : MonoBehaviour
     public static LevelLoader instance;
     public int buildINDEX;
 
-    [SerializeField] public Animator animator;
+    //[SerializeField] public Animator animator;
 
     public GameObject loadingPanel;
 
@@ -63,12 +63,12 @@ public class LevelLoader : MonoBehaviour
     private IEnumerator LoadLevel()
     {
         loadingPanel.SetActive(true);
-        animator.SetTrigger("End");
+        //animator.SetTrigger("End");
 
         yield return new WaitForSeconds(1);
 
         SceneManager.LoadSceneAsync(buildINDEX);
-        animator.SetTrigger("Start");
+        //animator.SetTrigger("Start");
 
         yield return null;
     }

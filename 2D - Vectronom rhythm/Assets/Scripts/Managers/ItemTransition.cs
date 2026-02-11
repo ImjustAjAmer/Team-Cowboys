@@ -5,9 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class ItemTransition : MonoBehaviour
 {
+
     public static ItemTransition instance;
-    [SerializeField] Animator transitionController;
-    public GameObject loadingPanel;
+    public Animator playerAnimationController;
+
     private void Awake()
     {
         instance = this;
@@ -20,14 +21,12 @@ public class ItemTransition : MonoBehaviour
 
     IEnumerator LoadPanel()
     {
-        loadingPanel.SetActive(true);
-
-        transitionController.SetTrigger("End");
+        playerAnimationController.Play("360Pose");
 
         yield return new WaitForSeconds(1);
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
 
-        transitionController.SetTrigger("Start");
-        
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
     }
+
+
 }
