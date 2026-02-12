@@ -8,6 +8,7 @@ TagManager:
   - tile
   - Collectible
   - Audio
+  - EventSystem
   layers:
   - Default
   - TransparentFX
