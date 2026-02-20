@@ -8,14 +8,6 @@ public class DonutCollect : MonoBehaviour
 
     private DonutManager DM;
 
-    /*private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.collider.CompareTag("Player"))
-        {
-            Debug.Log("this code has been hit --donut collect--");
-        }
-    }*/
-
     void Awake()
     {
         instance = this;
@@ -29,7 +21,22 @@ public class DonutCollect : MonoBehaviour
         {
             DM.AddToCounter(pointValue);
 
+            DM.hasCollected = true;
+
+            DM.RNGTransforms();
+
+            Invoke("ResetCollection", 0.1f);
+
+            Destroy(gameObject);
+
             Debug.Log("this code has been hit --donut collect--");
         }
     }
+
+    void ResetCollection()
+    {
+        DM.hasCollected = false;
+    }
+
+
 }
