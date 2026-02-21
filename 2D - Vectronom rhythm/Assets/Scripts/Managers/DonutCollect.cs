@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using UnityEngine;
 
 public class DonutCollect : MonoBehaviour
@@ -8,18 +9,22 @@ public class DonutCollect : MonoBehaviour
 
     private DonutManager DM;
 
+    private ScoreManager SM;
+
     void Awake()
     {
         instance = this;
 
-        DM = FindFirstObjectByType<DonutManager>();
+        DM= FindFirstObjectByType<DonutManager>();
+
+        SM= FindFirstObjectByType<ScoreManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
         {
-            DM.AddToCounter(pointValue);
+            SM.AddToCounter(pointValue);
 
             DM.hasCollected = true;
 

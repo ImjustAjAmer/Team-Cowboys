@@ -1445,7 +1445,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -9156,6 +9156,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3929137177462801398, guid: df2768129274dda41bfc26929df7543c, type: 3}
   m_PrefabInstance: {fileID: 566745282}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &582457401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 582457402}
+  - component: {fileID: 582457403}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &582457402
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582457401}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &582457403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582457401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a108429d4cd204e77865477b69337f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
+  donutCounter: {fileID: 2058770450}
+  hasCollected: 0
+  currentDonutCount: 0
 --- !u!114 &621623845 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9058347008423491311, guid: df2768129274dda41bfc26929df7543c, type: 3}
@@ -9439,6 +9486,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 268d820705a8b274e9450bdfca1e4d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &710992278
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 710992279}
+  m_Layer: 0
+  m_Name: LiveManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &710992279
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710992278}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &711057232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10475,9 +10553,9 @@ RectTransform:
   - {fileID: 2058770449}
   m_Father: {fileID: 1104233583}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 221.87024, y: 111.87027}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -50, y: -50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1271475636
@@ -10557,12 +10635,9 @@ MonoBehaviour:
   - {fileID: 2141012107}
   - {fileID: 1193029571}
   - {fileID: 807456372}
-  donutCounter: {fileID: 2058770450}
   hasCollected: 0
   currentTRNSPICK: 0
-  currentDonutCount: 0
   donutPREFAB: {fileID: 2577612376758241411, guid: f4ee0a718bac94c1e9b8619728a268e1, type: 3}
-  canSPAWN: 0
 --- !u!1001 &1289168602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11778,6 +11853,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_Size.x
+      value: 3.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_Size.y
+      value: 4.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 3767737114265692236, guid: acf05b76dd1766f4987bd25e95ff1f07, type: 3}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1537266429
+      objectReference: {fileID: 0}
+    - target: {fileID: 4380409398226834198, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4696042966750461126, guid: 04881e471f8873540bf060193c5ba396, type: 3}
+      propertyPath: tileTag
+      value: Tile
+      objectReference: {fileID: 0}
     - target: {fileID: 4696042966750461126, guid: 04881e471f8873540bf060193c5ba396, type: 3}
       propertyPath: audioManager
       value: 
@@ -12636,7 +12743,7 @@ GameObject:
   - component: {fileID: 2058770451}
   - component: {fileID: 2058770450}
   m_Layer: 5
-  m_Name: textCounter
+  m_Name: DonutTextCounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13375,6 +13482,8 @@ SceneRoots:
   - {fileID: 329642388}
   - {fileID: 1104233582}
   - {fileID: 2012834379}
+  - {fileID: 710992279}
+  - {fileID: 582457402}
   - {fileID: 1050780274}
   - {fileID: 3761752825179830291}
   - {fileID: 339193769}
