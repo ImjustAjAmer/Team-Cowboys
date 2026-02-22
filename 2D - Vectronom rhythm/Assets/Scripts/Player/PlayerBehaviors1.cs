@@ -2,14 +2,11 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Diagnostics.CodeAnalysis;
-using System;
 
-public class PlayerBehaviors : MonoBehaviour
+public class PlayerBehaviors1 : MonoBehaviour
 {
     public static PlayerBehaviors Instance;
     public float moveDistance = 1f;
-
-    public BoxCollider2D BC2D;
 
     Collider2D playerCollider;
     public SpriteRenderer playerSprite;
@@ -77,11 +74,6 @@ public class PlayerBehaviors : MonoBehaviour
 
     void Start()
     {
-
-        BC2D.enabled = false;
-
-        Invoke("HandleBoxCollider", 1.0f);
-
         Collider2D hit = Physics2D.OverlapPoint(transform.position);
         if (hit != null && hit.CompareTag(tileTag))
         {
@@ -97,7 +89,6 @@ public class PlayerBehaviors : MonoBehaviour
         {
             StartCoroutine(HandleGameOver());
         }
-
     }
 
     void Update()
@@ -131,10 +122,10 @@ public class PlayerBehaviors : MonoBehaviour
         {
             if (col.CompareTag("Collectible"))
             {
-                CollectableBehaviors collectible = col.GetComponent<CollectableBehaviors>();
-                if (collectible != null)
+                CollectableBehaviors1 collectible1 = col.GetComponent<CollectableBehaviors1>();
+                if (collectible1 != null)
                 {
-                    collectible.LoadScene();
+                    collectible1.LoadThisScene();
                 }
             }
         }
@@ -281,10 +272,4 @@ public class PlayerBehaviors : MonoBehaviour
             Gizmos.DrawWireCube(bounds.center, bounds.size);
         }
     }
-
-    public void HandleBoxCollider()
-    {
-        BC2D.enabled = true;
-    }
-
 }

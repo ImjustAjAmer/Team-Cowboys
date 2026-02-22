@@ -1,10 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using NUnit.Framework;
 
 public class CollectableBehaviors : MonoBehaviour
 {
     public ItemTransition itemTransition;
+
+    //public returnTOMENU RTM;
 
     //Scene currentScene;
     //int currentSceneIndex = currentScene.buildIndex;
@@ -29,6 +32,12 @@ public class CollectableBehaviors : MonoBehaviour
     {
         itemTransition.LoadScreen();
     }
+
+    /*public void LoadThisScene()
+    {
+        RTM.LoadScreen();
+    }*/
+
 
     /*public void Collect()
     {
